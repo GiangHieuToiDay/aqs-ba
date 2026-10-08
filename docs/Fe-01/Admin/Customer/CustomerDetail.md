@@ -1,19 +1,19 @@
 | Module | modules\account\admin\customer\detail |
 | ------ | -------------------------------------- |
 | Menu   | Trang chủ / Quản trị hệ thống / Quản lý khách hàng / Chi tiết khách hàng (Admin / Customer / Detail) |
-| Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** và nhân viên có thẩm quyền xem toàn diện hồ sơ của một khách hàng (**UC-01.15**), bao gồm: Thông tin định danh cá nhân, các chỉ số giao dịch mua sắm (Tổng chi tiêu, Số đơn hàng, Tỷ lệ nhận hàng thành công), Sổ địa chỉ giao hàng nhận hàng của khách (đồng bộ từ phân hệ Khách hàng), Lịch sử đơn hàng đã đặt và Ghi chú nội bộ của cửa hàng. Màn hình đồng thời cung cấp chức năng **Khóa hoặc Mở khóa tài khoản khách hàng (UC-01.16)** khi phát hiện các hành vi vi phạm chính sách, bom hàng hoặc gian lận voucher khuyến mãi. Áp dụng style UI, layout, component theo **style chung của project**. |
+| Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** và nhân viên có thẩm quyền xem toàn diện hồ sơ của một khách hàng (**UC-110**), bao gồm: Thông tin định danh cá nhân, các chỉ số giao dịch mua sắm (Tổng chi tiêu, Số đơn hàng, Tỷ lệ nhận hàng thành công), Sổ địa chỉ giao hàng nhận hàng của khách (đồng bộ từ phân hệ Khách hàng), Lịch sử đơn hàng đã đặt và Ghi chú nội bộ của cửa hàng. Màn hình đồng thời cung cấp chức năng **Khóa hoặc Mở khóa tài khoản khách hàng (UC-158)** khi phát hiện các hành vi vi phạm chính sách, bom hàng hoặc gian lận voucher khuyến mãi. Áp dụng style UI, layout, component theo **style chung của project**. |
 
 **Tổng quan màn Chi tiết hồ sơ & Quản trị khách hàng:**
 - A. Bố cục Header, Chỉ số KPI & Thanh công cụ hành động
   - A.1. Header trang, trạng thái tài khoản & Button Khóa/Mở khóa
   - A.2. Thẻ chỉ số giao dịch tổng hợp (Customer KPI Cards)
 - B. Nội dung chi tiết các Tab chức năng
-  - B.1. Tab "Thông tin cá nhân & Tài khoản" (UC-01.15)
+  - B.1. Tab "Thông tin cá nhân & Tài khoản" (UC-110)
   - B.2. Tab "Sổ địa chỉ nhận hàng"
   - B.3. Tab "Lịch sử đơn hàng gần đây"
   - B.4. Tab "Ghi chú nội bộ & Lịch sử vi phạm (Staff Notes & Audit)"
 - C. Danh mục Modal nghiệp vụ quản trị
-  - C.1. Modal Khóa tài khoản khách hàng (UC-01.16)
+  - C.1. Modal Khóa tài khoản khách hàng (UC-158)
   - C.2. Modal Mở khóa tài khoản khách hàng
   - C.3. Modal Thêm ghi chú nội bộ mới
 - D. Quy tắc nghiệp vụ (Business Rules)
@@ -22,8 +22,8 @@
   - BR-03: Đồng bộ dữ liệu Sổ địa chỉ với phân hệ Khách hàng (Address Book Sync)
   - BR-04: Quy chuẩn Ghi chú nội bộ & Lưu vết kiểm toán (Staff Notes Governance)
 - E. Luồng nghiệp vụ chi tiết (Workflows)
-  - E.1. Luồng xem chi tiết hồ sơ khách hàng (UC-01.15)
-  - E.2. Luồng khóa tài khoản khách hàng vi phạm (UC-01.16)
+  - E.1. Luồng xem chi tiết hồ sơ khách hàng (UC-110)
+  - E.2. Luồng khóa tài khoản khách hàng vi phạm (UC-158)
   - E.3. Luồng mở khóa tài khoản khách hàng
   - E.4. Luồng thêm ghi chú chăm sóc khách hàng nội bộ
   - E.5. Sơ đồ tuần tự nghiệp vụ (Sequence Diagram)
@@ -37,11 +37,11 @@
 
 | Tên | Loại thành phần | Mô tả chi tiết |
 | --- | --------------- | -------------- |
-| Nút Quay lại | IconButton | Mũi tên trái `←` kèm text: *"Danh sách khách hàng"*. Nhấp vào quay về màn [CustomerList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Customer/CustomerList.md). |
+| Nút Quay lại | IconButton | Mũi tên trái `←` kèm text: *"Danh sách khách hàng"*. Nhấp vào quay về màn [CustomerList.md](CustomerList.md). |
 | Avatar & Tên KH | UserSummary | Avatar tròn lớn (60x60px) + Tên khách hàng (chữ in đậm, font-size 22px) + Mã KH: `[KH0089]`. |
 | Tag Hạng thành viên | TierBadge | Badge phân hạng khách hàng thân thiết: *Kim Cương, Vàng, Bạc, Đồng, Thành viên Mới*. |
 | Tag Trạng thái | StatusBadge | Tag màu lớn phản ánh trạng thái tài khoản:<br>- **Đang hoạt động (Active)**: Màu xanh lục<br>- **Đang bị khóa (Locked)**: Màu đỏ (kèm tooltip lý do khóa khi hover)<br>- **Ngừng hoạt động (Inactive)**: Màu xám (tài khoản tạm ngưng theo yêu cầu) |
-| Nút Trạng thái tài khoản | ButtonGroup | **1. Khi tài khoản đang Active:**<br>- Nút đỏ: **"Khóa tài khoản"** (Mở Modal C.1).<br>- Nút xám: **"Ngừng hoạt động"** (Chuyển `STATUS = 'INACTIVE'`).<br><br>**2. Khi tài khoản đang Locked:**<br>- Nút xanh: **"Mở khóa tài khoản"** (Mở Modal C.2).<br><br>**3. Khi tài khoản đang Inactive:**<br>- Nút xanh: **"Kích hoạt lại"** (Chuyển `STATUS = 'ACTIVE'`). |
+| Nút Trạng thái tài khoản | ButtonGroup | Chỉ `Store Owner` nhìn thấy và được gọi API thay đổi trạng thái.<br><br>**1. Khi tài khoản đang Active:**<br>- Nút đỏ: **"Khóa tài khoản"** (Mở Modal C.1).<br>- Nút xám: **"Ngừng hoạt động"** (Chuyển `STATUS = 'INACTIVE'`).<br><br>**2. Khi tài khoản đang Locked:**<br>- Nút xanh: **"Mở khóa tài khoản"** (Mở Modal C.2).<br><br>**3. Khi tài khoản đang Inactive:**<br>- Nút xanh: **"Kích hoạt lại"** (Chuyển `STATUS = 'ACTIVE'`). |
 
 ## A.2. Thẻ chỉ số giao dịch tổng hợp (Customer KPI Cards)
 
@@ -58,7 +58,7 @@ Hàng 4 thẻ thống kê nhanh đặt ngay dưới header giúp Admin nắm b�
 
 # B. Nội dung chi tiết các Tab chức năng
 
-## B.1. Tab "Thông tin cá nhân & Tài khoản" (UC-01.15)
+## B.1. Tab "Thông tin cá nhân & Tài khoản" (UC-110)
 
 Hiển thị toàn bộ thông tin đăng ký và hồ sơ định danh của khách hàng:
 
@@ -76,7 +76,7 @@ Hiển thị toàn bộ thông tin đăng ký và hồ sơ định danh của kh
 
 ## B.2. Tab "Sổ địa chỉ nhận hàng"
 
-Hiển thị toàn bộ danh sách địa chỉ nhận hàng mà khách hàng đã lưu trong hồ sơ cá nhân (đồng bộ từ phân hệ [Address.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Common/Profile/Address.md)):
+Hiển thị toàn bộ danh sách địa chỉ nhận hàng mà khách hàng đã lưu trong hồ sơ cá nhân (đồng bộ từ phân hệ [Address.md](../../Common/Profile/Address.md)):
 
 | Tên | Loại thành phần | Mô tả chi tiết |
 | --- | --------------- | -------------- |
@@ -113,7 +113,7 @@ Cho phép nhân viên và Admin lưu các ghi chú riêng tư về đặc điể
 
 # C. Danh mục Modal nghiệp vụ quản trị
 
-## C.1. Modal Khóa tài khoản khách hàng (UC-01.16)
+## C.1. Modal Khóa tài khoản khách hàng (UC-158)
 
 Kích hoạt khi Admin nhấn nút **"Khóa tài khoản"**:
 
@@ -153,10 +153,9 @@ Kích hoạt khi nhân viên/Admin bấm nút **"+ Thêm ghi chú"** tại Tab B
 # D. Quy tắc nghiệp vụ (Business Rules)
 
 ## BR-01: Phân quyền & Bảo mật thông tin cá nhân khách hàng (Customer Data Privacy)
-1. **Chủ cửa hàng (Admin) & Quản lý bán hàng:** Có toàn quyền xem đầy đủ thông tin định danh, xem sổ địa chỉ, lịch sử đơn và thực hiện Khóa/Mở khóa.
-2. **Nhân viên thông thường (NV Bán hàng, Shipper):**
-   - Chỉ được xem thông tin liên hệ và địa chỉ phục vụ xử lý đơn hàng.
-   - **Không có quyền** Khóa hoặc Mở khóa tài khoản khách hàng.
+1. **Chủ cửa hàng (Store Owner):** Có quyền xem đầy đủ hồ sơ và Khóa/Mở khóa tài khoản (UC-110, UC-158).
+2. **Sales Staff và Accountant:** Có quyền xem hồ sơ khách hàng để xử lý bán hàng, thanh toán và công nợ theo UC-110; **không có quyền** Khóa/Mở khóa hoặc đổi trạng thái tài khoản.
+3. **Shipper:** Không truy cập màn Chi tiết khách hàng; chỉ nhận thông tin liên hệ và địa chỉ trong đơn/đợt giao hàng được phân công. Backend kiểm tra quyền truy cập màn và API.
 
 ## BR-02: Quy tắc Khóa tài khoản & Thu hồi quyền mua hàng (Lock Policy & Token Revocation)
 1. **Thu hồi phiên đăng nhập:** Khi tài khoản khách hàng chuyển sang trạng thái `LOCKED`:
@@ -166,7 +165,7 @@ Kích hoạt khi nhân viên/Admin bấm nút **"+ Thêm ghi chú"** tại Tab B
 3. **Chặn tạo đơn hàng:** Khách hàng bị khóa tuyệt đối không thể gửi request đặt đơn hàng mới (`POST /api/v1/orders`).
 
 ## BR-03: Đồng bộ dữ liệu Sổ địa chỉ với phân hệ Khách hàng (Address Book Sync)
-Tab Sổ địa chỉ nhận hàng hiển thị dữ liệu trực tiếp từ bảng `USER_ADDRESSES` của khách hàng đó (đồng bộ 100% với các địa chỉ khách tự tạo tại [Address.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Common/Profile/Address.md)). Admin chỉ có quyền xem, không được tự ý sửa đổi địa chỉ của khách nếu không có yêu cầu từ chính chủ.
+Tab Sổ địa chỉ nhận hàng hiển thị dữ liệu trực tiếp từ bảng `USER_ADDRESSES` của khách hàng đó (đồng bộ 100% với các địa chỉ khách tự tạo tại [Address.md](../../Common/Profile/Address.md)). Admin chỉ có quyền xem, không được tự ý sửa đổi địa chỉ của khách nếu không có yêu cầu từ chính chủ.
 
 ## BR-04: Quy chuẩn Ghi chú nội bộ & Lưu vết kiểm toán (Staff Notes Governance)
 1. Ghi chú nội bộ là tài liệu bảo mật nội bộ cửa hàng, tuyệt đối không hiển thị trên giao diện của khách hàng (Frontend Client).
@@ -182,9 +181,9 @@ Tab Sổ địa chỉ nhận hàng hiển thị dữ liệu trực tiếp từ b
 
 # E. Luồng nghiệp vụ chi tiết (Workflows)
 
-## E.1. Luồng xem chi tiết hồ sơ khách hàng (UC-01.15)
+## E.1. Luồng xem chi tiết hồ sơ khách hàng (UC-110)
 
-- **Bước 1:** Admin tại trang danh sách [CustomerList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Customer/CustomerList.md) nhấp vào Mã KH hoặc chọn *"Xem chi tiết hồ sơ"*.
+- **Bước 1:** Admin tại trang danh sách [CustomerList.md](CustomerList.md) nhấp vào Mã KH hoặc chọn *"Xem chi tiết hồ sơ"*.
 - **Bước 2:** Hệ thống tải dữ liệu tổng hợp từ API `GET /api/v1/admin/customers/{id}`:
   - Thông tin cá nhân & tài khoản.
   - Các chỉ số KPI giao dịch (Tổng chi tiêu, số đơn, tỷ lệ nhận hàng).
@@ -192,7 +191,7 @@ Tab Sổ địa chỉ nhận hàng hiển thị dữ liệu trực tiếp từ b
   - Lịch sử ghi chú nội bộ và lịch sử kiểm toán khóa/mở khóa.
 - **Bước 3:** Giao diện hiển thị các phân vùng thông tin và các thẻ KPI.
 
-## E.2. Luồng khóa tài khoản khách hàng vi phạm (UC-01.16)
+## E.2. Luồng khóa tài khoản khách hàng vi phạm (UC-158)
 
 - **Bước 1:** Admin bấm nút **"Khóa tài khoản"** trên Header trang chi tiết.
 - **Bước 2:** Hệ thống hiển thị Modal xác nhận C.1.

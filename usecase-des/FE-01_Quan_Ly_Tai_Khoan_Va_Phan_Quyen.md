@@ -7,7 +7,7 @@
 Guest  
 
 **Secondary Actors**  
-Email Service, SMS Service  
+SMS Service  
 
 **Description**  
 As a Guest, I want to register a new customer account using my contact details and password so that I can log into the system, place online orders, track delivery progress, and manage warranty records.  
@@ -17,51 +17,23 @@ As a Guest, I want to register a new customer account using my contact details a
 2. Người dùng truy cập vào trang chủ hoặc bất kỳ trang công khai nào trên hệ thống website cửa hàng.  
 
 **Normal Flow**  
-*Đăng ký tài khoản khách hàng chuẩn qua Email*  
+*Đăng ký tài khoản khách hàng bằng số điện thoại*  
 1. Người dùng nhấp vào nút "Đăng ký" (Register) trên thanh tiêu đề (Header) của website.  
-2. Hệ thống hiển thị biểu mẫu "Đăng ký tài khoản" gồm các trường thông tin: Họ và tên, Số điện thoại, Địa chỉ Email, Mật khẩu, Xác nhận mật khẩu, và hộp chọn "Đồng ý với điều khoản sử dụng".  
-3. Người dùng nhập đầy đủ thông tin:  
-   - Họ và tên: chuỗi ký tự hợp lệ từ 2 đến 50 ký tự.  
-   - Số điện thoại: 10 chữ số, bắt đầu bằng đầu số viễn thông hợp lệ tại Việt Nam (03x, 05x, 07x, 08x, 09x).  
-   - Địa chỉ Email: định dạng hợp lệ (vd: `example@domain.com`).  
-   - Mật khẩu: tối thiểu 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.  
-   - Xác nhận mật khẩu: trùng khớp hoàn toàn với Mật khẩu.  
-   - Đánh dấu chọn "Đồng ý với điều khoản sử dụng".  
-4. Người dùng nhấp vào nút "Đăng ký ngay".  
-5. Hệ thống kiểm tra tính hợp lệ của dữ liệu (validation format, kiểm tra số điện thoại và email chưa từng tồn tại trên hệ thống).  
-6. Hệ thống tạo mã xác thực OTP (gồm 6 chữ số ngẫu nhiên, hiệu lực trong 5 phút), kích hoạt Secondary Actor `Email Service` gửi thư chứa OTP đến địa chỉ email người dùng đã đăng ký.  
-7. Hệ thống chuyển hướng người dùng đến màn hình "Xác thực tài khoản (OTP Verification)" kèm đồng hồ đếm ngược 300 giây.  
-8. Người dùng kiểm tra hộp thư email, nhập đúng 6 chữ số OTP vào biểu mẫu và nhấp nút "Xác nhận".  
-9. Hệ thống kiểm tra mã OTP hợp lệ và còn hạn sử dụng.  
-10. Hệ thống lưu tài khoản khách hàng mới vào cơ sở dữ liệu với trạng thái `Active`, gán vai trò mặc định là `Customer`, đồng thời tự động tạo bản ghi hồ sơ khách hàng liên kết.  
-11. Hệ thống ghi nhận sự kiện đăng ký thành công vào Activity Log.  
-12. Hệ thống hiển thị thông báo thành công (MSG01: "Đăng ký tài khoản thành công!"), tự động đăng nhập người dùng và chuyển hướng về Trang chủ.  
+2. Hệ thống hiển thị biểu mẫu gồm Số điện thoại, Mã xác minh OTP, Họ và tên, Mật khẩu và ô "Đồng ý với điều khoản sử dụng"; không có trường Email tại bước đăng ký.  
+3. Người dùng nhập Số điện thoại di động Việt Nam gồm 10 chữ số, bắt đầu bằng 03, 05, 07, 08 hoặc 09 và nhấp "Gửi Mã xác minh".  
+4. Hệ thống kiểm tra định dạng và tính duy nhất của Số điện thoại, sinh OTP gồm 6 chữ số, hiệu lực **180 giây**, rồi gửi qua `SMS Service`.  
+5. Người dùng nhập OTP, Họ và tên (2–100 ký tự), Mật khẩu (tối thiểu 8 ký tự, có chữ hoa, chữ thường, số và ký tự đặc biệt), đánh dấu đồng ý điều khoản rồi nhấp "Đăng ký". Mật khẩu chỉ nhập một lần; ô mật khẩu có chức năng ẩn/hiện.  
+6. Hệ thống kiểm tra dữ liệu, xác thực OTP còn hạn và chưa sử dụng, đồng thời kiểm tra lại tính duy nhất của Số điện thoại trước khi tạo tài khoản.  
+7. Hệ thống tạo tài khoản `Customer` ở trạng thái `Active`, đánh dấu Số điện thoại đã xác thực, khởi tạo hồ sơ và mã khách hàng, ghi Activity Log, hủy OTP.  
+8. Hệ thống cấp phiên đăng nhập, thông báo thành công (MSG01: "Đăng ký tài khoản thành công!") và chuyển về Trang chủ.  
 
 **Alternative Flows**  
-- **Step 3.1_Đăng ký nhanh bằng Google OAuth:**  
-  1. Tại màn hình Đăng ký, người dùng nhấp chọn nút "Đăng ký bằng Google".  
-  2. Hệ thống chuyển hướng người dùng đến trang xác thực Google OAuth 2.0.  
-  3. Người dùng đăng nhập và cấp quyền chia sẻ thông tin cơ bản (Họ tên, Email).  
-  4. Google xác thực thành công và trả token định danh về hệ thống.  
-  5. Hệ thống kiểm tra: Nếu email chưa tồn tại, hệ thống tạo tài khoản `Customer` mới (đã xác thực email) và yêu cầu người dùng bổ sung Số điện thoại. Sau khi bổ sung, quay lại bước 10 của Normal Flow.  
-- **Step 5_Dữ liệu nhập không hợp lệ:**  
-  1. Người dùng để trống một trong các trường bắt buộc: Hệ thống hiển thị thông báo lỗi dưới trường tương ứng (MSG02: "Vui lòng nhập trường thông tin này").  
-  2. Số điện thoại hoặc Email sai định dạng: Hệ thống báo lỗi (MSG03: "Định dạng Số điện thoại hoặc Email không hợp lệ").  
-  3. Mật khẩu không thỏa mãn chính sách bảo mật: Hệ thống báo lỗi (MSG04: "Mật khẩu phải từ 8 ký tự trở lên, gồm chữ hoa, chữ thường, số và ký tự đặc biệt").  
-  4. Mật khẩu xác nhận không khớp: Hệ thống báo lỗi (MSG05: "Mật khẩu xác nhận không trùng khớp").  
-  5. Người dùng chưa chọn đồng ý điều khoản: Hệ thống báo lỗi (MSG06: "Bạn cần đồng ý với điều khoản sử dụng để tiếp tục").  
-  6. Người dùng chỉnh sửa lại thông tin và quay lại bước 4 của Normal Flow.  
-- **Step 5.1_Email hoặc Số điện thoại đã được đăng ký:**  
-  1. Hệ thống phát hiện Email hoặc Số điện thoại đã tồn tại trong hệ thống.  
-  2. Hệ thống giữ nguyên các thông tin đã nhập (trừ mật khẩu) và hiển thị thông báo lỗi (MSG07: "Email hoặc Số điện thoại này đã được sử dụng. Vui lòng chọn Đăng nhập hoặc Quên mật khẩu").  
-  3. Người dùng chọn Đăng nhập hoặc nhập thông tin liên hệ khác.  
-- **Step 8.1_Yêu cầu gửi lại mã OTP:**  
-  1. Người dùng không nhận được OTP trong vòng 60 giây và nhấp nút "Gửi lại mã OTP".  
-  2. Hệ thống hủy mã OTP cũ, tạo mã OTP mới và gọi `Email Service` gửi lại thư xác thực.  
-  3. Quay lại bước 8 của Normal Flow (giới hạn gửi lại tối đa 3 lần/giờ).  
-- **Step 9.1_Mã OTP không chính xác hoặc hết hạn:**  
-  1. Người dùng nhập sai OTP: Hệ thống báo lỗi (MSG08: "Mã OTP không chính xác. Vui lòng kiểm tra lại"). Cho phép nhập lại tối đa 5 lần.  
-  2. Nếu mã OTP đã quá hạn 5 phút: Hệ thống báo lỗi (MSG09: "Mã OTP đã hết hiệu lực. Vui lòng yêu cầu gửi mã mới").  
+- **Step 3_Số điện thoại không hợp lệ hoặc đã đăng ký:** Không gửi SMS; hiển thị lỗi tại trường Số điện thoại và cho phép sửa.  
+- **Step 4_Gửi OTP thất bại:** Không chuyển sang bước xác thực; thông báo gửi thất bại và cho phép thử lại theo giới hạn gửi mã.  
+- **Step 4.1_Gửi lại OTP:** Sau 60 giây, người dùng được yêu cầu mã mới; mã cũ bị hủy. Tổng cộng tối đa 3 lần gửi trong 10 phút cho cùng Số điện thoại và mục đích đăng ký, tính cả lần gửi đầu tiên.  
+- **Step 6_Dữ liệu không hợp lệ:** Hiển thị lỗi tương ứng nếu thiếu trường bắt buộc, Họ tên hoặc Mật khẩu sai chuẩn, hoặc chưa đồng ý điều khoản; giữ thông tin hợp lệ đã nhập để người dùng sửa.  
+- **Step 6.1_OTP sai hoặc hết hạn:** Cho phép nhập sai tối đa 5 lần; sai lần thứ 5 hoặc quá 180 giây thì hủy mã và yêu cầu gửi mã mới.  
+- **Step 6.2_Số điện thoại bị đăng ký trong lúc xác thực:** Từ chối tạo bản ghi mới, thông báo số đã được sử dụng và hướng dẫn đăng nhập hoặc khôi phục mật khẩu.  
 
 **Postconditions**  
 1. Tài khoản khách hàng mới được tạo thành công với vai trò `Customer` và trạng thái `Active`.  
@@ -75,52 +47,49 @@ As a Guest, I want to register a new customer account using my contact details a
 Customer, Store Owner, Sales Staff, Technical Staff, Shipper, Accountant  
 
 **Secondary Actors**  
-None  
+SMS Service, Email Service  
 
 **Description**  
 As a registered user, I want to log into the system with my credentials so that I can access features, dashboards, and data corresponding to my assigned role.  
 
 **Preconditions**  
-1. Người dùng đã có tài khoản trên hệ thống và tài khoản đang ở trạng thái `Active`.  
+1. Người dùng đã có tài khoản trên hệ thống: Customer ở trạng thái `Active`; nhân viên ở trạng thái `Active` hoặc `Pending` để đổi mật khẩu lần đầu.  
 2. Người dùng chưa đăng nhập hoặc phiên làm việc trước đó đã hết hạn.  
 
 **Normal Flow**  
 *Đăng nhập bằng tài khoản và mật khẩu*  
 1. Người dùng nhấp vào nút "Đăng nhập" (Log In) trên Header hoặc truy cập trực tiếp vào một đường dẫn yêu cầu xác thực.  
-2. Hệ thống hiển thị màn hình Đăng nhập gồm hai trường: Tên đăng nhập (Email hoặc Số điện thoại) và Mật khẩu, cùng nút "Đăng nhập", nút "Đăng nhập bằng Google" và liên kết "Quên mật khẩu?".  
-3. Người dùng nhập Email/Số điện thoại và Mật khẩu hợp lệ.  
+2. Hệ thống hiển thị cổng đăng nhập tương ứng: Customer dùng Số điện thoại và Mật khẩu; nhân viên dùng Email công việc và Mật khẩu.  
+3. Người dùng nhập định danh và Mật khẩu hợp lệ.  
 4. Người dùng nhấp nút "Đăng nhập".  
 5. Hệ thống kiểm tra dữ liệu và đối soát thông tin đăng nhập trong cơ sở dữ liệu:  
    - Kiểm tra định dạng tài khoản và sự tồn tại của người dùng.  
    - Xác thực mật khẩu đã được mã hóa (Hash verification).  
-   - Kiểm tra trạng thái tài khoản là `Active`.  
-6. Hệ thống tạo phiên làm việc mới (Session/JWT Access Token & Refresh Token) với thời hạn hiệu lực được định cấu hình.  
-7. Hệ thống ghi nhận thời gian đăng nhập thành công, địa chỉ IP và thiết bị vào Activity Log.  
-8. Hệ thống điều hướng người dùng dựa theo vai trò được gán:  
+   - Kiểm tra trạng thái tài khoản theo điều kiện tiên quyết; từ chối `Locked` và `Inactive`.  
+6. Hệ thống sinh OTP 6 chữ số, hiệu lực **180 giây**; gửi qua SMS cho Customer hoặc Email công việc cho nhân viên. Chỉ OTP mới nhất có hiệu lực.  
+7. Người dùng nhập đúng OTP còn hạn. Hệ thống hủy OTP sau khi xác thực thành công, cấp Access Token và Refresh Token, rồi ghi thời gian, IP và thiết bị vào Activity Log.  
+8. Hệ thống điều hướng người dùng dựa theo vai trò và trạng thái:  
    - `Store Owner`, `Sales Staff`, `Accountant`: Chuyển hướng tới Trang quản trị (Admin/Staff Portal Dashboard).  
    - `Technical Staff`: Chuyển hướng tới Danh sách công việc kỹ thuật/bảo hành.  
    - `Shipper`: Chuyển hướng tới Danh sách đợt giao hàng được phân công.  
    - `Customer`: Chuyển hướng về Trang chủ (hoặc trang trước đó người dùng đang truy cập dở dang).  
+   - Nhân viên `Pending` đăng nhập lần đầu: Chỉ cấp quyền tạm để đổi mật khẩu lần đầu; sau khi đổi thành công mới cấp quyền theo vai trò.  
 
 **Alternative Flows**  
-- **Step 2.1_Đăng nhập bằng tài khoản Google (Dành cho Customer):**  
-  1. Người dùng nhấp vào nút "Đăng nhập với Google".  
-  2. Hệ thống chuyển hướng sang màn hình đăng nhập tài khoản của Google.  
-  3. Người dùng cấp quyền xác thực.  
-  4. Google trả về thông tin xác thực thành công.  
-  5. Hệ thống đối soát email: Nếu email đã tồn tại và tài khoản ở trạng thái `Active`, hệ thống cấp quyền đăng nhập và chuyển sang bước 6 của Normal Flow.  
 - **Step 5_Xác thực không thành công (Lỗi đăng nhập):**  
-  1. Để trống Email hoặc Mật khẩu: Hệ thống thông báo lỗi (MSG10: "Vui lòng nhập đầy đủ thông tin đăng nhập").  
+  1. Để trống định danh hoặc Mật khẩu: Hệ thống thông báo lỗi (MSG10: "Vui lòng nhập đầy đủ thông tin đăng nhập").  
   2. Sai tài khoản hoặc mật khẩu: Hệ thống hiển thị thông báo chung (MSG11: "Thông tin đăng nhập hoặc mật khẩu không chính xác").  
   3. Hệ thống tăng bộ đếm số lần đăng nhập sai liên tiếp lên 1 đơn vị.  
-  4. Nếu số lần đăng nhập sai đạt ngưỡng 5 lần liên tiếp: Hệ thống tạm khóa tài khoản trong 30 phút và hiển thị cảnh báo (MSG12: "Bạn đã nhập sai 5 lần liên tiếp. Tài khoản bị tạm khóa trong 30 phút vì lý do bảo mật").  
+  4. Nếu số lần đăng nhập sai đạt ngưỡng 5 lần liên tiếp: Hệ thống tạm khóa đăng nhập trong **15 phút** và hiển thị cảnh báo (MSG12: "Bạn đã nhập sai 5 lần liên tiếp. Chức năng đăng nhập tạm khóa trong 15 phút vì lý do bảo mật").  
 - **Step 5.1_Tài khoản bị khóa hoặc vô hiệu hóa:**  
   1. Người dùng nhập đúng thông tin tài khoản nhưng trạng thái tài khoản là `Locked` hoặc `Inactive`.  
   2. Hệ thống từ chối đăng nhập và hiển thị thông báo lỗi (MSG13: "Tài khoản của bạn đã bị khóa hoặc ngừng hoạt động. Vui lòng liên hệ Quản trị viên để được hỗ trợ").  
+- **Step 6_Gửi OTP thất bại hoặc yêu cầu gửi lại:** Hệ thống chưa cấp phiên. Cho phép gửi lại sau 60 giây; tối đa 3 lần gửi trong 10 phút cho cùng định danh và mục đích đăng nhập, tính cả lần đầu. Mã mới hủy mã cũ.  
+- **Step 7_OTP sai hoặc hết hạn:** Sai tối đa 5 lần; sai lần thứ 5 hoặc quá 180 giây thì hủy mã, yêu cầu gửi mã mới theo giới hạn ở bước 6.  
 
 **Postconditions**  
 1. Phiên đăng nhập hợp lệ được thiết lập và lưu trên trình duyệt người dùng.  
-2. Người dùng truy cập thành công vào các chức năng tương ứng với quyền hạn.  
+2. Người dùng truy cập các chức năng theo vai trò; nhân viên `Pending` chỉ được truy cập bước đổi mật khẩu lần đầu.  
 3. Nhật ký đăng nhập thành công được lưu vào Activity Log.  
 
 ---
@@ -314,46 +283,37 @@ Người dùng đã đăng nhập thành công vào hệ thống và đang ở t
 
 ---
 
-### UC-007 Yêu cầu đặt lại mật khẩu (Reset Password Request)
+### UC-007 Khách hàng yêu cầu đặt lại mật khẩu (Reset Customer Password Request)
 **Primary Actors**  
-Customer, Store Owner, Sales Staff, Technical Staff, Shipper, Accountant  
+Customer  
 
 **Secondary Actors**  
-Email Service  
+SMS Service  
 
 **Description**  
-As a user who forgot my password, I want to request a password reset via my registered email so that I can securely set a new password and regain access to my account.  
+As a Customer who forgot my password, I want to verify my registered phone number with an SMS OTP so that I can securely set a new password and regain access to my account.  
 
 **Preconditions**  
 Người dùng không nhớ mật khẩu và đang ở màn hình Đăng nhập của hệ thống.  
 
 **Normal Flow**  
-*Yêu cầu gửi liên kết/mã đặt lại mật khẩu qua Email*  
+*Khôi phục mật khẩu Customer qua Số điện thoại và SMS OTP*  
 1. Người dùng nhấp vào liên kết "Quên mật khẩu?" trên màn hình Đăng nhập.  
-2. Hệ thống hiển thị màn hình "Khôi phục mật khẩu" yêu cầu nhập địa chỉ Email đã đăng ký.  
-3. Người dùng nhập địa chỉ Email và nhấp nút "Gửi mã xác nhận".  
-4. Hệ thống kiểm tra: Định dạng email hợp lệ và tồn tại tài khoản tương ứng đang ở trạng thái `Active`.  
-5. Hệ thống tạo một chuỗi Token đặt lại mật khẩu ngẫu nhiên an toàn (kèm mã PIN 6 số, có hiệu lực trong 15 phút) và lưu tạm thời kèm thời điểm hết hạn.  
-6. Hệ thống kích hoạt Secondary Actor `Email Service` gửi thư chứa liên kết khôi phục mật khẩu và mã OTP đến địa chỉ email của người dùng.  
-7. Hệ thống hiển thị thông báo (MSG28: "Yêu cầu đã được tiếp nhận. Hướng dẫn đặt lại mật khẩu đã được gửi đến email của bạn, vui lòng kiểm tra hộp thư").  
-8. Người dùng mở email, nhấp vào liên kết đặt lại mật khẩu trong thư.  
-9. Hệ thống chuyển hướng người dùng đến màn hình "Thiết lập mật khẩu mới", tự động xác thực tính hợp lệ của Token.  
-10. Người dùng nhập Mật khẩu mới và Xác nhận mật khẩu mới.  
-11. Người dùng nhấp nút "Xác nhận đặt lại mật khẩu".  
-12. Hệ thống kiểm tra chuẩn mật khẩu mới, băm mật khẩu và lưu vào cơ sở dữ liệu; đồng thời hủy hiệu lực của Token vừa sử dụng.  
-13. Hệ thống ghi nhận sự kiện Reset mật khẩu vào Activity Log.  
-14. Hệ thống hiển thị thông báo thành công (MSG29: "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay với mật khẩu mới") và chuyển hướng về màn hình Đăng nhập.  
+2. Hệ thống hiển thị màn hình "Khôi phục mật khẩu" yêu cầu Số điện thoại đã đăng ký và Mã xác minh OTP.  
+3. Người dùng nhập Số điện thoại rồi nhấp "Gửi mã".  
+4. Hệ thống kiểm tra định dạng Số điện thoại; nếu có tài khoản Customer `Active` tương ứng, hệ thống sinh OTP 6 chữ số, hiệu lực **180 giây**, gửi qua `SMS Service`. Phản hồi giao diện không tiết lộ Số điện thoại có tồn tại hay không.  
+5. Người dùng nhập OTP rồi nhấp "Tiếp tục". Hệ thống xác thực mã còn hạn, chưa sử dụng và hủy mã sau khi xác thực thành công.  
+6. Hệ thống cấp `RESET_PASSWORD_TOKEN` dùng một lần, hiệu lực **15 phút**, rồi mở màn "Thiết lập mật khẩu mới".  
+7. Người dùng nhập Mật khẩu mới một lần và nhấp "Xác nhận thay đổi".  
+8. Hệ thống kiểm tra token, chuẩn mật khẩu và mật khẩu mới không trùng mật khẩu hiện tại bằng hàm verify/compare; sau đó băm mật khẩu mới, lưu vào cơ sở dữ liệu, hủy token và thu hồi các phiên đăng nhập cũ.  
+9. Hệ thống ghi Activity Log, thông báo thành công (MSG29: "Đặt lại mật khẩu thành công! Bạn có thể đăng nhập ngay với mật khẩu mới") và chuyển về màn Đăng nhập.  
 
 **Alternative Flows**  
-- **Step 4_Email không tồn tại trong hệ thống:**  
-  1. Nhằm ngăn chặn dò quét tài khoản (Security Enumeration Attack), hệ thống hiển thị thông báo an toàn: "Nếu email này tồn tại trong hệ thống, chúng tôi đã gửi liên kết khôi phục tới hộp thư của bạn." nhưng thực tế không gửi email.  
-- **Step 9.1_Token đặt lại mật khẩu đã hết hạn hoặc không hợp lệ:**  
-  1. Người dùng nhấp vào liên kết khi đã quá hạn 15 phút hoặc liên kết đã từng được sử dụng.  
-  2. Hệ thống hiển thị thông báo lỗi (MSG30: "Đường dẫn đặt lại mật khẩu đã hết hạn hoặc không hợp lệ. Vui lòng gửi lại yêu cầu mới").  
-  3. Hệ thống cung cấp nút điều hướng quay lại bước 1.  
-- **Step 6.1_Email Service gặp sự cố không gửi được thư:**  
-  1. Hệ thống phát hiện lỗi đường truyền SMTP/Email API.  
-  2. Hệ thống ghi log lỗi hệ thống và thông báo cho người dùng (MSG31: "Không thể gửi thư vào thời điểm này. Vui lòng thử lại sau ít phút hoặc liên hệ quản trị viên").  
+- **Step 4_Số điện thoại không tồn tại hoặc tài khoản không hoạt động:** Không gửi OTP; hiển thị cùng thông báo chung với trường hợp đã tiếp nhận yêu cầu để không lộ tình trạng tài khoản.  
+- **Step 4.1_Gửi lại OTP:** Cho phép gửi lại sau 60 giây, tối đa 3 lần gửi/10 phút cho cùng Số điện thoại và mục đích khôi phục, tính cả lần đầu; mã mới hủy mã cũ.  
+- **Step 5_OTP sai hoặc hết hạn:** Sai lần thứ 5 hoặc quá 180 giây thì hủy mã; yêu cầu mã mới theo giới hạn gửi mã.  
+- **Step 6.1_Token hết hạn hoặc không hợp lệ:** Quá 15 phút hoặc đã sử dụng thì từ chối cập nhật mật khẩu, hướng dẫn thực hiện lại từ bước nhập Số điện thoại.  
+- **Step 4.2_SMS Service gặp sự cố:** Ghi log lỗi, thông báo chưa thể gửi mã và cho phép thử lại theo giới hạn gửi mã.  
 
 **Postconditions**  
 1. Mật khẩu tài khoản người dùng được cập nhật mới.  
@@ -632,34 +592,24 @@ As a Store Owner, I want to directly reset a staff member's password when they f
 2. Tài khoản nhân viên mục tiêu đang ở trạng thái `Active`.  
 
 **Normal Flow**  
-*Chủ cửa hàng chủ động cấp lại mật khẩu cho nhân viên*  
+*Chủ cửa hàng gửi liên kết đặt lại mật khẩu cho nhân viên*  
 1. Tại danh sách hoặc màn hình chi tiết nhân viên, Chủ cửa hàng nhấp vào nút "Đặt lại mật khẩu" (Reset Password).  
-2. Hệ thống hiển thị hộp thoại xác nhận: "Bạn có chắc chắn muốn đặt lại mật khẩu cho nhân viên [Họ tên nhân viên]?". Hệ thống cung cấp hai lựa chọn:  
-   - Tự động sinh mật khẩu ngẫu nhiên an toàn.  
-   - Nhập mật khẩu mới chỉ định.  
-   - Checkbox: "Bắt buộc nhân viên đổi mật khẩu ở lần đăng nhập đầu tiên".  
-3. Chủ cửa hàng chọn "Tự động sinh mật khẩu ngẫu nhiên" và tích chọn "Bắt buộc đổi mật khẩu ở lần đăng nhập tiếp theo".  
-4. Chủ cửa hàng nhấp nút "Xác nhận đặt lại".  
-5. Hệ thống sinh chuỗi mật khẩu ngẫu nhiên (ví dụ: `Staff@2026!x8`).  
-6. Hệ thống băm mật khẩu mới và lưu vào cơ sở dữ liệu, đồng thời kích hoạt cờ `MustChangePassword = True`.  
-7. Hệ thống ngay lập tức thu hồi toàn bộ các phiên làm việc hiện tại của nhân viên đó.  
-8. Hệ thống gọi Secondary Actor `Email Service` gửi thư thông báo mật khẩu mới đến email của nhân viên.  
-9. Hệ thống ghi nhận hành động đặt lại mật khẩu của Store Owner vào Audit Log.  
-10. Hệ thống hiển thị hộp thoại thông báo thành công kèm hiển thị trực tiếp mật khẩu mới vừa sinh để Store Owner có thể sao chép nhanh (MSG46: "Mật khẩu nhân viên đã được đặt lại thành công. Mật khẩu mới: [Password]").  
+2. Hệ thống hiển thị hộp thoại với hai phương thức: gửi liên kết đặt lại mật khẩu qua Email công việc (mặc định) hoặc tạo mật khẩu tạm để bàn giao trực tiếp.  
+3. Chủ cửa hàng chọn gửi liên kết và nhấp "Tiến hành đặt lại".  
+4. Hệ thống thu hồi toàn bộ phiên làm việc hiện tại, sinh token đặt lại dùng một lần có hiệu lực **24 giờ**, rồi gửi liên kết tới Email công việc qua `Email Service`. Mật khẩu hiện tại chỉ bị thay đổi sau khi nhân viên mở liên kết và đặt mật khẩu mới hợp lệ.  
+5. Hệ thống ghi Audit Log hành động của Store Owner và thông báo đã gửi liên kết thành công.  
 
 **Alternative Flows**  
-- **Step 2.1_Chủ cửa hàng tự nhập mật khẩu chỉ định:**  
-  1. Chủ cửa hàng chọn nhập mật khẩu mới và gõ mật khẩu mong muốn vào ô nhập.  
-  2. Hệ thống kiểm tra mật khẩu phải đáp ứng chính sách bảo mật (>= 8 ký tự, có chữ hoa, thường, số, ký tự đặc biệt).  
-  3. Nếu không hợp lệ -> Hệ thống báo lỗi (MSG04) và yêu cầu nhập lại.  
+- **Step 2.1_Tạo mật khẩu tạm thời:** Hệ thống sinh mật khẩu ngẫu nhiên 10 ký tự, băm và lưu, đặt `IS_FIRST_LOGIN = true`, thu hồi mọi phiên cũ và chỉ hiển thị mật khẩu một lần để Store Owner bàn giao trực tiếp. Nhân viên phải đổi mật khẩu ở lần đăng nhập tiếp theo.  
+- **Step 4.1_Gửi email thất bại:** Không báo thành công gửi liên kết; thông báo lỗi và cho phép Chủ cửa hàng thử lại.  
 - **Step 1.1_Đặt lại mật khẩu cho tài khoản đang bị khóa:**  
   1. Tài khoản nhân viên đang ở trạng thái `Locked`.  
   2. Hệ thống cảnh báo (MSG47: "Tài khoản nhân viên này đang bị khóa. Bạn cần mở khóa tài khoản trước khi thực hiện đặt lại mật khẩu").  
 
 **Postconditions**  
-1. Mật khẩu của nhân viên được thay đổi thành chuỗi mới.  
+1. Với phương thức liên kết, chỉ token đặt lại được cấp và mật khẩu đổi khi nhân viên hoàn tất liên kết; với phương thức mật khẩu tạm, mật khẩu được đổi ngay.  
 2. Mọi phiên đăng nhập cũ bị chấm dứt.  
-3. Trạng thái bắt buộc đổi mật khẩu ở lần đăng nhập tới được kích hoạt.  
+3. `IS_FIRST_LOGIN = true` khi dùng mật khẩu tạm; liên kết đặt lại dùng một lần và hết hạn sau 24 giờ.  
 4. Sự kiện được ghi lại trong Audit Log.  
 
 ---

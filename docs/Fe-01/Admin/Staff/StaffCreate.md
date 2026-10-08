@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Quản trị hệ thống / Quản lý nhân viên / Thêm mới nhân viên (Admin / Staff / Create) |
 | Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** khởi tạo tài khoản làm việc cho nhân viên mới trong hệ thống. Thông tin khởi tạo gồm: Mã nhân viên (tự động sinh theo quy tắc hoặc nhập tay), Họ và tên, Email công việc, Số điện thoại, Chi nhánh trực thuộc, Vai trò ban đầu và Ghi chú nội bộ. Sau khi bấm **"Tạo tài khoản"**, hệ thống tự động sinh một mật khẩu ngẫu nhiên an toàn, lưu tài khoản ở trạng thái **Chờ kích hoạt (Pending)** và gửi email thông báo kèm mật khẩu tạm thời đến hòm thư công việc của nhân viên. Nhân viên bắt buộc phải đổi mật khẩu mới trong lần đầu tiên đăng nhập. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Tạo tài khoản nhân viên (UC-01.08):**
+**Tổng quan màn Tạo tài khoản nhân viên (UC-008):**
 - A. Bố cục và Form nhập liệu Thêm mới nhân viên
   - A.1. Header trang và nút điều hướng
   - A.2. Thông tin các trường dữ liệu trên form
@@ -28,7 +28,7 @@
 
 | Tên | Loại dữ liệu | Bắt buộc | Mô tả |
 | --- | ------------ | -------- | ----- |
-| Nút Quay lại | IconButton | | Nút icon mũi tên trái `←` kèm text: *"Danh sách nhân viên"*. Nhấp vào sẽ quay về màn hình [StaffList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Staff/StaffList.md). |
+| Nút Quay lại | IconButton | | Nút icon mũi tên trái `←` kèm text: *"Danh sách nhân viên"*. Nhấp vào sẽ quay về màn hình [StaffList.md](StaffList.md). |
 | Tiêu đề trang | Title | | Tiêu đề lớn: **"Thêm mới nhân viên"** (font size 20px, bold). |
 | Phụ đề mô tả | Text | | Dòng text phụ màu xám bên dưới: *"Khởi tạo thông tin nhân viên, cấp vai trò làm việc và gửi thông tin kích hoạt tài khoản"*. |
 
@@ -50,7 +50,7 @@ Form được bố trí dạng Card 2 cột hiện đại, chia làm 2 khối th
 
 | Tên | Loại dữ liệu | Bắt buộc | Mô tả |
 | --- | ------------ | -------- | ----- |
-| Hủy bỏ | Button | | Button outline dạng: **"Hủy bỏ"**.<br><br>Hành vi: Chuyển hướng quay lại màn hình danh sách [StaffList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Staff/StaffList.md). Nếu form đã nhập liệu, hiển thị popup xác nhận hủy thay đổi. |
+| Hủy bỏ | Button | | Button outline dạng: **"Hủy bỏ"**.<br><br>Hành vi: Chuyển hướng quay lại màn hình danh sách [StaffList.md](StaffList.md). Nếu form đã nhập liệu, hiển thị popup xác nhận hủy thay đổi. |
 | Tạo tài khoản | Button | | Button primary màu cam thương hiệu, icon check + label **"Tạo tài khoản"**.<br><br>Hành vi: Kiểm tra tính hợp lệ dữ liệu toàn form $\rightarrow$ Kích hoạt luồng tạo tài khoản, sinh mật khẩu ngẫu nhiên và gửi email kích hoạt (theo **BR-04**). |
 
 ---
@@ -81,13 +81,13 @@ Ngay sau khi thông tin nhân viên hợp lệ và bản ghi được lưu:
    - `IS_FIRST_LOGIN = true` (Đánh dấu bắt buộc đổi mật khẩu).
 4. Hệ thống kích hoạt dịch vụ Mail gửi một email kích hoạt tới địa chỉ `EMAIL` của nhân viên:
    - Tiêu đề: *"[AQS Store] Thông tin kích hoạt tài khoản làm việc của bạn"*
-   - Nội dung: Chào mừng nhân viên mới, cung cấp Tên đăng nhập (Email/SĐT/Mã NV), Mật khẩu tạm thời, đường link dẫn đến cổng đăng nhập và lời nhắc: *"Mật khẩu tạm thời có hiệu lực trong 24 giờ. Bạn bắt buộc phải đổi mật khẩu mới trong lần đầu tiên đăng nhập."*
+    - Nội dung: Chào mừng nhân viên mới, cung cấp Tên đăng nhập (Email công việc), Mật khẩu tạm thời, đường link dẫn đến cổng đăng nhập và lời nhắc: *"Mật khẩu tạm thời có hiệu lực trong 24 giờ. Bạn bắt buộc phải đổi mật khẩu mới trong lần đầu tiên đăng nhập. Nếu mật khẩu hết hạn, hãy liên hệ Chủ cửa hàng để được gửi lại email kích hoạt."*
 
 ## BR-05: Bắt buộc đổi mật khẩu ở lần đăng nhập đầu tiên (Force Password Change)
 1. Khi nhân viên sử dụng thông tin mật khẩu tạm thời để đăng nhập thành công vào hệ thống lần đầu:
 2. Hệ thống kiểm tra cờ `IS_FIRST_LOGIN == true`:
    - Ngay lập tức chặn quyền truy cập vào màn hình làm việc chính.
-   - Bắt buộc chuyển hướng người dùng đến màn hình [Đổi mật khẩu lần đầu](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Account/FirstTimeChangePassword.md).
+   - Bắt buộc chuyển hướng người dùng đến màn hình [Đổi mật khẩu lần đầu](../Account/FirstTimeChangePassword.md).
    - Sau khi nhân viên đặt mật khẩu mới thành công: Cập nhật `IS_FIRST_LOGIN = false` và `STATUS = 'ACTIVE'`, sau đó mới cho phép truy cập các chức năng theo vai trò được giao.
 
 ---
@@ -106,7 +106,7 @@ Ngay sau khi thông tin nhân viên hợp lệ và bản ghi được lưu:
 - **Bước 8:** Lưu bản ghi vào bảng `USERS` với `STATUS = 'PENDING'`, `IS_FIRST_LOGIN = true`. Lưu vai trò vào bảng quan hệ `USER_ROLES`.
 - **Bước 9:** Kích hoạt gửi email kích hoạt tài khoản kèm mật khẩu tạm đến email nhân viên.
 - **Bước 10:** Ghi bản ghi Audit Log (`ACTION = 'CREATE_STAFF'`, `PERFORMED_BY = admin_id`).
-- **Bước 11:** Backend trả về HTTP 201 Created. Frontend hiển thị Toast thông báo: *"Tạo tài khoản nhân viên thành công! Thông tin đăng nhập đã được gửi tới email của nhân viên."*, sau đó tự động điều hướng về màn hình danh sách [StaffList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Staff/StaffList.md).
+- **Bước 11:** Backend trả về HTTP 201 Created. Frontend hiển thị Toast thông báo: *"Tạo tài khoản nhân viên thành công! Thông tin đăng nhập đã được gửi tới email của nhân viên."*, sau đó tự động điều hướng về màn hình danh sách [StaffList.md](StaffList.md).
 
 ## C.2. Luồng ngoại lệ & Xử lý lỗi trùng lặp (Alternative Flows)
 

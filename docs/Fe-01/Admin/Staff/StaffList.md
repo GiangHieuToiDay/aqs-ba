@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Quản trị hệ thống / Quản lý nhân viên / Danh sách nhân viên (Admin / Staff Management) |
 | Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** và Quản lý nhân sự tra cứu, theo dõi, tìm kiếm, lọc và quản lý toàn bộ tài khoản nhân viên nội bộ trong hệ thống. Màn hình cung cấp bộ lọc đa tiêu chí (Từ khóa, Vai trò, Trạng thái, Chi nhánh), hiển thị bảng dữ liệu nhân viên phân trang Server-side, cho phép chuyển hướng sang màn hình Tạo mới, Xem chi tiết/Phân quyền, thực hiện thao tác nhanh (Khóa/Mở khóa, Đặt lại mật khẩu, Gửi lại email kích hoạt cho tài khoản chờ) và Xuất dữ liệu nhân sự ra file Excel. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Danh sách và tìm kiếm tài khoản nhân viên (UC-01.11):**
+**Tổng quan màn Danh sách và tìm kiếm tài khoản nhân viên (UC-012 / UC-159):**
 - A. Danh sách nhân viên (Màn hình chính)
   - A.1. Bộ lọc tìm kiếm (Search Card)
   - A.2. Bảng dữ liệu danh sách nhân viên
@@ -63,7 +63,7 @@ Nằm ở góc trên bên phải của bảng danh sách:
 
 | Tên | Loại dữ liệu | Bắt buộc | Mô tả |
 | --- | ------------ | -------- | ----- |
-| Thêm nhân viên | Button | | Button Primary, màu cam thương hiệu, icon dấu cộng `+` + label **"Thêm nhân viên"**.<br><br>Hành vi: Điều hướng người dùng sang màn hình [Tạo tài khoản nhân viên](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Staff/StaffCreate.md). |
+| Thêm nhân viên | Button | | Button Primary, màu cam thương hiệu, icon dấu cộng `+` + label **"Thêm nhân viên"**.<br><br>Hành vi: Điều hướng người dùng sang màn hình [Tạo tài khoản nhân viên](StaffCreate.md). |
 | Xuất Excel | Button | | Button Outline, icon file excel + label **"Xuất Excel"**.<br><br>Hành vi: Tải về file `.xlsx` danh sách nhân viên theo đúng điều kiện bộ lọc hiện tại (tối đa 5.000 dòng/lần xuất). |
 
 ## A.4. Phân trang dữ liệu (Server-side Pagination)
@@ -107,10 +107,8 @@ Hiển thị khi Admin bấm chọn thao tác *"Khóa tài khoản"* tại cột
 # C. Quy tắc nghiệp vụ (Business Rules)
 
 ## BR-01: Phân quyền truy cập & Phạm vi dữ liệu (Data Scope & RBAC)
-1. **Quyền truy cập màn hình:** Chỉ người dùng có vai trò `Admin` (Chủ cửa hàng hoặc Quản trị viên hệ thống) mới có quyền truy cập vào phân hệ này.
-2. **Phạm vi hiển thị dữ liệu (Data Scope):**
-   - **Chủ cửa hàng / Super Admin:** Xem được toàn bộ danh sách nhân viên thuộc tất cả các chi nhánh trên toàn hệ thống.
-   - **Quản lý chi nhánh (Store Manager):** Chỉ được xem danh sách nhân viên thuộc chi nhánh mà mình phụ trách; không xem được tài khoản Admin cấp cao hơn.
+1. **Quyền truy cập màn hình:** Chỉ `Store Owner` có quyền xem danh sách và thao tác quản trị tài khoản nhân viên; Backend áp dụng cùng quy tắc cho API.
+2. **Phạm vi hiển thị dữ liệu:** `Store Owner` xem toàn bộ nhân viên thuộc các chi nhánh của cửa hàng. Vai trò quản lý chi nhánh chưa thuộc danh sách tác nhân và không được cấp quyền tại phân hệ này.
 
 ## BR-02: Cơ chế tìm kiếm và kết hợp bộ lọc (Search & Multi-Filter Logic)
 1. Tất cả các điều kiện lọc trên `SearchCard` được kết hợp với nhau theo phép toán logic **AND**:
@@ -123,14 +121,15 @@ Hiển thị khi Admin bấm chọn thao tác *"Khóa tài khoản"* tại cột
 ## BR-03: Quy chuẩn trạng thái tài khoản nhân viên (Account Status Lifecycle)
 1. `Pending` (Chờ kích hoạt): Tài khoản mới được tạo bởi Admin, hệ thống đã gửi email kèm mật khẩu tạm thời. Nhân viên chưa từng đăng nhập đổi mật khẩu lần đầu.
 2. `Active` (Đang hoạt động): Tài khoản đã hoàn tất bước đổi mật khẩu lần đầu và đang có quyền đăng nhập làm việc bình thường.
-3. `Locked` (Đang bị khóa): Tài khoản bị Admin khóa chủ động (kèm lý do) hoặc bị hệ thống khóa tự động do nhập sai mật khẩu quá 5 lần liên tiếp. Tài khoản không thể đăng nhập.
+3. `Locked` (Đang bị khóa): Tài khoản bị Admin khóa chủ động (kèm lý do) hoặc bị hệ thống khóa tự động do nhập sai mật khẩu 5 lần liên tiếp. Tài khoản không thể đăng nhập.
 4. `Inactive` (Ngừng hoạt động / Thôi việc): Áp dụng khi nhân viên tự xin thôi việc, chấm dứt hợp đồng lao động hoặc nghỉ việc. Toàn bộ phiên làm việc/Token bị thu hồi ngay lập tức, tài khoản không thể đăng nhập vào hệ thống quản trị và không xuất hiện trong danh sách phân công mới. Có thể kích hoạt lại nếu nhân viên quay trở lại làm việc.
 5. **Chính sách Không xóa cứng (No Hard Delete):** Hệ thống tuyệt đối không cung cấp tính năng xóa vĩnh viễn nhân viên khỏi CSDL để bảo toàn toàn vẹn dữ liệu đơn hàng, phiếu thu, hóa đơn đã từng được lập bởi nhân viên đó trong quá khứ.
 
 ## BR-04: Quy tắc gửi lại thư kích hoạt (Resend Activation Rules)
 1. Chỉ cho phép gửi lại thư kích hoạt đối với các tài khoản đang ở trạng thái `Pending`.
 2. Giới hạn tần suất (Rate Limit): Mỗi tài khoản chỉ được gửi lại tối đa 3 lần trong vòng 15 phút để chống spam email.
-3. Mỗi lần gửi lại, hệ thống hủy mã mật khẩu tạm cũ và sinh mã mật khẩu tạm ngẫu nhiên mới (hiệu lực 24 giờ).
+3. Mỗi lần gửi lại, hệ thống hủy mật khẩu tạm cũ và sinh mật khẩu tạm ngẫu nhiên mới (hiệu lực 24 giờ kể từ lần gửi mới).
+4. Nếu mật khẩu tạm hết hạn trước lần đăng nhập đầu, nhân viên không thể đăng nhập bằng mật khẩu đó. `Store Owner` dùng chức năng Gửi lại email kích hoạt để cấp mật khẩu tạm mới; tài khoản vẫn ở trạng thái `Pending` và giới hạn 3 lần/15 phút vẫn áp dụng.
 
 ## BR-05: Quy tắc xuất dữ liệu nhân viên ra Excel (Export Policy)
 1. Dữ liệu xuất ra file Excel lấy chính xác theo kết quả của bộ lọc đang áp dụng trên màn hình.

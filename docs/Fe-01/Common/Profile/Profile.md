@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Tài khoản của tôi / Hồ sơ (Common / Profile) |
 | Mô tả  | Dùng để cho phép đối tượng **Khách hàng / Người dùng đã đăng nhập (Customer / User)** xem và cập nhật thông tin hồ sơ cá nhân của mình. Màn hình nằm trong cụm phân hệ **"Tài khoản của tôi"** với bố cục tích hợp thanh điều hướng bên trái (Sidebar Navigation) và khung nội dung quản lý hồ sơ bên phải. Giao diện được thiết kế theo cơ chế **vừa xem vừa chỉnh sửa trực tiếp (Inline Editing)**: toàn bộ thông tin hiển thị sẵn trong các ô nhập liệu, người dùng có thể nhấp vào chỉnh sửa bất kỳ lúc nào và bấm nút **"Lưu"** ở dưới cùng form. Hệ thống tích hợp cơ chế **Kiểm soát thay đổi chưa lưu (Dirty Checking & Navigation Guard)**: nếu người dùng đã chỉnh sửa dữ liệu mà điều hướng rời đi (chuyển menu Sidebar, back trang) khi chưa bấm Lưu, hệ thống sẽ bật Popup cảnh báo xác nhận; ngược lại nếu chưa chỉnh sửa gì thì cho phép chuyển trang bình thường. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Quản lý Hồ sơ cá nhân (UC-01.04):**
+**Tổng quan màn Quản lý Hồ sơ cá nhân (UC-015 / UC-004):**
 - A. Bố cục chung & Thanh điều hướng Sidebar (Account Sidebar Navigation)
   - A.1. Thông tin tài khoản tóm tắt trên Sidebar
   - A.2. Danh mục Menu điều hướng Sidebar
@@ -154,7 +154,7 @@ Popup được thiết kế dạng Modal Dialog căn giữa màn hình, có lớ
 2. **Luồng liên kết Email mới:**
    - Người dùng nhấp "Thêm Email" hoặc "Thay đổi": Mở popup nhập địa chỉ Email mới.
    - Hệ thống kiểm tra format RFC 5322 và kiểm tra Email chưa tồn tại trong CSDL.
-   - Hệ thống gửi mã OTP xác nhận (hoặc liên kết kích hoạt) tới địa chỉ Email đó (hiệu lực 10–15 phút).
+   - Hệ thống gửi mã OTP xác nhận (hoặc liên kết kích hoạt) tới địa chỉ Email đó (hiệu lực 10 phút).
    - Nhập đúng mã OTP: Cập nhật trường `EMAIL` trong bảng `USERS`, đánh dấu `EMAIL_VERIFIED = true`.
 
 ## BR-03: Thẩm định Họ tên & Ngày tháng năm sinh (Validation Rules)

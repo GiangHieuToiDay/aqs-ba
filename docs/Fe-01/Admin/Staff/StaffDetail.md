@@ -1,19 +1,19 @@
 | Module | modules\account\admin\staff\detail |
 | ------ | ----------------------------------- |
 | Menu   | Trang chủ / Quản trị hệ thống / Quản lý nhân viên / Chi tiết nhân viên (Admin / Staff / Detail) |
-| Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** xem toàn diện hồ sơ của một nhân viên, thực hiện các nghiệp vụ quản trị cấp cao bao gồm: Cập nhật thông tin cá nhân và chi nhánh làm việc (**UC-01.13**); Gán hoặc điều chỉnh vai trò phân quyền RBAC (**UC-01.09**); Thực hiện Khóa hoặc Mở khóa tài khoản kèm lý do kiểm toán (**UC-01.10**); Đặt lại mật khẩu khẩn cấp (**UC-01.12**) và Tra cứu nhật ký kiểm toán (Audit Log) theo dõi toàn bộ lịch sử thay đổi quyền hạn và trạng thái của nhân viên. Tích hợp cơ chế thu hồi Session/Token thời gian thực để đảm bảo an ninh hệ thống. Áp dụng style UI, layout, component theo **style chung của project**. |
+| Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** xem toàn diện hồ sơ của một nhân viên, thực hiện các nghiệp vụ quản trị cấp cao bao gồm: Cập nhật thông tin cá nhân và chi nhánh làm việc (**UC-011**); Gán hoặc điều chỉnh vai trò phân quyền RBAC (**UC-009**); Thực hiện Khóa hoặc Mở khóa tài khoản kèm lý do kiểm toán (**UC-010**); Đặt lại mật khẩu khẩn cấp (**UC-014**) và Tra cứu nhật ký kiểm toán (Audit Log) theo dõi toàn bộ lịch sử thay đổi quyền hạn và trạng thái của nhân viên. Tích hợp cơ chế thu hồi Session/Token thời gian thực để đảm bảo an ninh hệ thống. Áp dụng style UI, layout, component theo **style chung của project**. |
 
 **Tổng quan màn Chi tiết & Quản trị nhân viên:**
 - A. Bố cục chung & Thanh công cụ hành động (Action Toolbar)
   - A.1. Header trang, trạng thái tài khoản & Button thanh công cụ
 - B. Nội dung chi tiết các Tab chức năng
-  - B.1. Tab "Thông tin cá nhân & Công việc" (UC-01.13)
-  - B.2. Tab "Phân quyền vai trò (RBAC)" (UC-01.09)
-  - B.3. Tab "Nhật ký kiểm toán (Audit Log)"
+  - B.1. Tab "Thông tin cá nhân & Công việc" (UC-013 xem, UC-011 cập nhật)
+  - B.2. Tab "Phân quyền vai trò (RBAC)" (UC-009)
+  - B.3. Tab "Nhật ký kiểm toán (Audit Log)" (UC-162)
 - C. Danh mục Modal nghiệp vụ quản trị
-  - C.1. Modal Khóa tài khoản nhân viên (UC-01.10)
+  - C.1. Modal Khóa tài khoản nhân viên (UC-010)
   - C.2. Modal Mở khóa tài khoản nhân viên
-  - C.3. Modal Đặt lại mật khẩu cho nhân viên (UC-01.12)
+  - C.3. Modal Đặt lại mật khẩu cho nhân viên (UC-014)
 - D. Quy tắc nghiệp vụ (Business Rules)
   - BR-01: Ma trận phân quyền vai trò RBAC & Thu hồi quyền thời gian thực (Real-time Token Invalidation)
   - BR-02: Quy tắc chống Orphan Admin (Prevent Self-Demotion & Self-Lock)
@@ -21,10 +21,10 @@
   - BR-04: Xử lý thu hồi Session khi Khóa tài khoản hoặc Reset mật khẩu (Session Termination)
   - BR-05: Ràng buộc tính hợp lệ khi cập nhật thông tin cá nhân
 - E. Luồng nghiệp vụ chi tiết (Workflows)
-  - E.1. Luồng gán/đổi vai trò nhân viên (UC-01.09)
-  - E.2. Luồng khóa tài khoản nhân viên (UC-01.10)
-  - E.3. Luồng đặt lại mật khẩu nhân viên (UC-01.12)
-  - E.4. Luồng chỉnh sửa thông tin nhân viên (UC-01.13)
+  - E.1. Luồng gán/đổi vai trò nhân viên (UC-009)
+  - E.2. Luồng khóa tài khoản nhân viên (UC-010)
+  - E.3. Luồng đặt lại mật khẩu nhân viên (UC-014)
+  - E.4. Luồng chỉnh sửa thông tin nhân viên (UC-011)
   - E.5. Sơ đồ tuần tự nghiệp vụ (Sequence Diagram)
 - F. Danh mục thông báo / Cảnh báo hệ thống (System Messages)
 
@@ -38,7 +38,7 @@ Giao diện header hiển thị thông tin tóm tắt của nhân viên và các
 
 | Tên | Loại thành phần | Mô tả chi tiết |
 | --- | --------------- | -------------- |
-| Nút Quay lại | IconButton | Mũi tên trái `←` kèm text: *"Danh sách nhân viên"*. Nhấp vào quay về màn [StaffList.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Staff/StaffList.md). |
+| Nút Quay lại | IconButton | Mũi tên trái `←` kèm text: *"Danh sách nhân viên"*. Nhấp vào quay về màn [StaffList.md](StaffList.md). |
 | Avatar & Tên NV | UserSummary | Avatar tròn lớn (60x60px) + Tên nhân viên in đậm (font-size 22px) + Mã NV: `[NV0025]`. |
 | Tag Trạng thái | StatusBadge | Tag màu lớn phản ánh trạng thái hiện tại:<br>- **Đang hoạt động (Active)**: Màu xanh lục<br>- **Đang bị khóa (Locked)**: Màu đỏ (kèm tooltip lý do khóa khi hover)<br>- **Chờ kích hoạt (Pending)**: Màu vàng cam<br>- **Ngừng hoạt động / Thôi việc (Inactive)**: Màu xám (kèm ghi chú/lý do thôi việc khi hover) |
 | Nút Đặt lại mật khẩu | Button (Outline) | Icon chìa khóa + label **"Đặt lại mật khẩu"**.<br><br>Hành vi: Mở Modal C.3 để Admin cấp lại mật khẩu mới khi nhân viên quên pass hoặc bàn giao ca gấp. |
@@ -50,7 +50,7 @@ Giao diện header hiển thị thông tin tóm tắt của nhân viên và các
 
 Màn hình chia thành 3 Tab nội dung:
 
-## B.1. Tab "Thông tin cá nhân & Công việc" (UC-01.13)
+## B.1. Tab "Thông tin cá nhân & Công việc" (UC-013 xem, UC-011 cập nhật)
 
 Cho phép xem và cập nhật thông tin liên hệ, chi nhánh công tác của nhân viên:
 
@@ -66,7 +66,7 @@ Cho phép xem và cập nhật thông tin liên hệ, chi nhánh công tác củ
 | Lần đăng nhập cuối | Text | | Thời điểm gần nhất nhân viên đăng nhập hệ thống (`LAST_LOGIN_AT`). Readonly. | LAST_LOGIN_AT | DATETIME |
 | Lưu thay đổi | Button | | Button Primary, label: **"Lưu thay đổi"**.<br><br>Hành vi: Validate dữ liệu $\rightarrow$ Gọi API `PUT /api/v1/admin/staffs/{id}` $\rightarrow$ Cập nhật CSDL $\rightarrow$ Hiển thị Toast thành công: *"Cập nhật thông tin nhân viên thành công!"*. | | |
 
-## B.2. Tab "Phân quyền vai trò (RBAC)" (UC-01.09)
+## B.2. Tab "Phân quyền vai trò (RBAC)" (UC-009)
 
 Quản lý các vai trò được phân quyền cho tài khoản nhân viên. Hệ thống hỗ trợ mô hình RBAC với các vai trò định sẵn:
 
@@ -84,7 +84,7 @@ Quản lý các vai trò được phân quyền cho tài khoản nhân viên. H�
 - Button: **"Lưu phân quyền"** (Primary Button).
   - Khi bấm: Hệ thống kiểm tra an toàn theo **BR-02** (chống tự gỡ Admin) $\rightarrow$ Cập nhật bảng `USER_ROLES` $\rightarrow$ Ghi Audit Log $\rightarrow$ Kích hoạt thu hồi Token theo **BR-01** (nếu nhân viên đang online).
 
-## B.3. Tab "Nhật ký kiểm toán (Audit Log)"
+## B.3. Tab "Nhật ký kiểm toán (Audit Log)" (UC-162)
 
 Hiển thị bảng lịch sử toàn bộ các hành động quản trị đã tác động lên tài khoản nhân viên này để phục vụ minh bạch và kiểm soát nội bộ:
 
@@ -99,7 +99,7 @@ Hiển thị bảng lịch sử toàn bộ các hành động quản trị đã 
 
 # C. Danh mục Modal nghiệp vụ quản trị
 
-## C.1. Modal Khóa tài khoản nhân viên (UC-01.10)
+## C.1. Modal Khóa tài khoản nhân viên (UC-010)
 
 Kích hoạt khi Admin nhấn nút **"Khóa tài khoản"**:
 
@@ -123,7 +123,7 @@ Kích hoạt khi Admin nhấn nút **"Mở khóa tài khoản"** đối với nh
 | Nút Hủy | Button (Secondary) | Label **"Hủy"** - Đóng modal. |
 | Nút Xác nhận Mở khóa | Button (Primary) | Label **"Xác nhận mở khóa"** - Cập nhật trạng thái sang `Active`, reload giao diện. |
 
-## C.3. Modal Đặt lại mật khẩu cho nhân viên (UC-01.12)
+## C.3. Modal Đặt lại mật khẩu cho nhân viên (UC-014)
 
 Kích hoạt khi Admin nhấn nút **"Đặt lại mật khẩu"**:
 
@@ -182,7 +182,7 @@ Mọi hành động nhạy cảm thực hiện trên màn hình này BẮT BUỘ
 
 ## BR-06: Quy chuẩn trạng thái Thôi việc (Inactive State & Re-activate)
 1. **Chuyển sang Inactive:** Khi nhân viên nghỉ việc/tự thôi việc, Admin thực hiện chuyển trạng thái sang `Inactive`.
-2. **Quyền hạn khi Inactive:** Tài khoản bị vô hiệu hóa đăng nhập toàn diện tại Cổng quản trị [StaffLogin.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Account/StaffLogin.md).
+2. **Quyền hạn khi Inactive:** Tài khoản bị vô hiệu hóa đăng nhập toàn diện tại Cổng quản trị [StaffLogin.md](../Account/StaffLogin.md).
 3. **Bảo toàn dữ liệu:** Không xóa bản ghi nhân viên; giữ nguyên các chứng từ, đơn hàng, báo cáo liên quan do nhân viên này từng xử lý.
 4. **Kích hoạt lại (Re-activate):** Nếu nhân viên quay trở lại làm việc, Admin có thể bấm nút **"Kích hoạt lại làm việc"** để chuyển `STATUS = 'ACTIVE'`, cho phép nhân viên tiếp tục đăng nhập làm việc bình thường.
 
@@ -190,7 +190,7 @@ Mọi hành động nhạy cảm thực hiện trên màn hình này BẮT BUỘ
 
 # E. Luồng nghiệp vụ chi tiết (Workflows)
 
-## E.1. Luồng gán/đổi vai trò nhân viên (UC-01.09)
+## E.1. Luồng gán/đổi vai trò nhân viên (UC-009)
 
 - **Bước 1:** Admin truy cập màn hình Chi tiết nhân viên, chuyển sang tab **"Phân quyền vai trò (RBAC)"**.
 - **Bước 2:** Hệ thống tải danh sách vai trò hiện tại của nhân viên.
@@ -201,7 +201,7 @@ Mọi hành động nhạy cảm thực hiện trên màn hình này BẮT BUỘ
 - **Bước 7:** Vô hiệu hóa session cũ của nhân viên trong Redis.
 - **Bước 8:** Trả về phản hồi thành công, giao diện hiển thị Toast: *"Cập nhật phân quyền nhân viên thành công!"*.
 
-## E.2. Luồng khóa tài khoản nhân viên (UC-01.10)
+## E.2. Luồng khóa tài khoản nhân viên (UC-010)
 
 - **Bước 1:** Admin bấm nút **"Khóa tài khoản"** trên thanh công cụ header.
 - **Bước 2:** Hệ thống hiển thị Modal xác nhận C.1.
@@ -210,7 +210,7 @@ Mọi hành động nhạy cảm thực hiện trên màn hình này BẮT BUỘ
 - **Bước 5:** Xóa toàn bộ token của nhân viên trong Redis. Ghi Audit Log.
 - **Bước 6:** Backend trả về 200 OK. Đóng modal, chuyển Badge trạng thái sang màu đỏ `Đang bị khóa`, đổi nút thành "Mở khóa tài khoản", hiển thị Toast thành công.
 
-## E.3. Luồng đặt lại mật khẩu nhân viên (UC-01.12)
+## E.3. Luồng đặt lại mật khẩu nhân viên (UC-014)
 
 - **Bước 1:** Admin bấm nút **"Đặt lại mật khẩu"** trên header.
 - **Bước 2:** Hệ thống mở Modal C.3. Admin chọn 1 trong 2 phương án: Gửi link qua mail hoặc Tạo mật khẩu tạm trực tiếp.
@@ -220,7 +220,7 @@ Mọi hành động nhạy cảm thực hiện trên màn hình này BẮT BUỘ
   - *Nếu tạo pass tạm:* Sinh chuỗi ngẫu nhiên 10 ký tự, hash Bcrypt, lưu `IS_FIRST_LOGIN = true`, hiển thị chuỗi text mật khẩu lên modal để Admin copy.
 - **Bước 5:** Ghi Audit Log hành động `RESET_PASSWORD`.
 
-## E.4. Luồng chỉnh sửa thông tin nhân viên (UC-01.13)
+## E.4. Luồng chỉnh sửa thông tin nhân viên (UC-011)
 
 - **Bước 1:** Tại tab **"Thông tin cá nhân & Công việc"**, Admin sửa Họ tên, SĐT hoặc chọn Chi nhánh mới.
 - **Bước 2:** Admin bấm nút **"Lưu thay đổi"**.

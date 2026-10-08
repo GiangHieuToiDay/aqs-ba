@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Quản trị hệ thống / Quản lý khách hàng / Danh sách khách hàng (Admin / Customer Management) |
 | Mô tả  | Dùng để cho phép **Chủ cửa hàng (Store Owner / Admin)** và nhân viên quản trị theo dõi, tra cứu, tìm kiếm và phân tích toàn bộ tệp khách hàng đã đăng ký tài khoản trong hệ thống. Màn hình cung cấp bộ lọc chuyên sâu (Từ khóa Tên/SĐT/Email, Trạng thái tài khoản, Hạng thành viên Loyalty, Khoảng ngày đăng ký), hiển thị bảng dữ liệu khách hàng tích hợp các chỉ số kinh doanh quan trọng (Số đơn hàng đã mua, Tổng chi tiêu tích lũy, Lần mua gần nhất), hỗ trợ phân trang Server-side, xem chi tiết hồ sơ khách hàng, thao tác nhanh Khóa/Mở khóa tài khoản và Xuất dữ liệu tệp khách hàng ra file Excel. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Danh sách và tìm kiếm tài khoản khách hàng (UC-01.14):**
+**Tổng quan màn Danh sách và tìm kiếm tài khoản khách hàng (UC-109; thao tác khóa/mở khóa UC-158):**
 - A. Danh sách khách hàng (Màn hình chính)
   - A.1. Bộ lọc tìm kiếm đa tiêu chí (Search Card)
   - A.2. Bảng dữ liệu danh sách khách hàng & chỉ số mua sắm
@@ -46,7 +46,7 @@
 | --- | ------------ | -------- | ----- | -------------- | ------ |
 | Bảng khách hàng | DataTable | | Bảng hiển thị danh sách khách hàng có phân trang Server-side, hỗ trợ sắp xếp theo các cột: Số đơn, Tổng chi tiêu, Ngày tạo. | | |
 | STT | Number | | Số thứ tự tăng dần từ 1 theo từng trang hiển thị: `(Trang - 1) * Số dòng + Index`. | | 10 |
-| Mã KH | Hyperlink | | Mã định danh khách hàng tự động sinh bởi hệ thống (VD: `KH000089`, `KH000152`).<br><br>Dạng link xanh đậm. Nhấp vào sẽ mở màn hình [Chi tiết khách hàng](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Customer/CustomerDetail.md). | CUSTOMER_CODE | 20 |
+| Mã KH | Hyperlink | | Mã định danh khách hàng tự động sinh bởi hệ thống (VD: `KH000089`, `KH000152`).<br><br>Dạng link xanh đậm. Nhấp vào sẽ mở màn hình [Chi tiết khách hàng](CustomerDetail.md). | CUSTOMER_CODE | 20 |
 | Khách hàng | UserCell / Avatar | | Avatar tròn thu nhỏ (36x36px) kèm Họ và tên đầy đủ của khách hàng (`FULL_NAME`). Nếu chưa có avatar hiển thị ký tự viết tắt. | FULL_NAME / AVATAR_URL | 100 |
 | Số điện thoại | Text | | Số điện thoại tài khoản chính chủ của khách hàng (VD: `0966 875 204`). | PHONE_NUMBER | 15 |
 | Email | Text | | Địa chỉ email liên kết của khách hàng. Nếu chưa liên kết email hiển thị: *"Chưa liên kết"*. | EMAIL | 255 |
@@ -55,7 +55,7 @@
 | Tổng chi tiêu | Currency | | Tổng số tiền khách hàng đã thanh toán thành công lũy kế từ trước đến nay. Định dạng tiền tệ VNĐ (VD: `8.450.000 đ`). Cho phép click sắp xếp tăng/giảm. | TOTAL_SPENT | DECIMAL |
 | Ngày tham gia | Date | | Ngày khách hàng đăng ký tài khoản trên hệ thống. Định dạng: `DD/MM/YYYY`. | CREATED_AT | DATE |
 | Trạng thái | Tag / StatusBadge | | Tag màu trạng thái tài khoản:<br>- **Đang hoạt động**: Tag xanh lục (Green) - `Active`<br>- **Đang bị khóa**: Tag đỏ (Red) - `Locked`<br>- **Ngừng hoạt động**: Tag xám (Gray) - `Inactive` | STATUS | 20 |
-| Thao tác | ActionMenu | | Dropdown icon 3 chấm `...` cho từng khách hàng:<br>1. **Xem chi tiết hồ sơ**: Chuyển đến [CustomerDetail.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Customer/CustomerDetail.md).<br>2. **Khóa tài khoản**: Hiển thị khi đang `Active` (Mở modal B.1).<br>3. **Mở khóa tài khoản**: Hiển thị khi đang `Locked`.<br>4. **Ngừng hoạt động (Inactive)**: Chuyển trạng thái tạm ngưng theo yêu cầu. | | |
+| Thao tác | ActionMenu | | Dropdown icon 3 chấm `...` cho từng khách hàng:<br>1. **Xem chi tiết hồ sơ**: Chuyển đến [CustomerDetail.md](CustomerDetail.md), với dữ liệu theo quyền của người xem.<br>2. **Khóa tài khoản**: Chỉ `Store Owner` thấy khi tài khoản đang `Active` (mở modal B.1).<br>3. **Mở khóa tài khoản**: Chỉ `Store Owner` thấy khi tài khoản đang `Locked`.<br>4. **Ngừng hoạt động (Inactive)**: Chỉ `Store Owner` thấy; chuyển trạng thái theo yêu cầu hợp lệ. Backend kiểm tra quyền cho cả ba thao tác thay đổi trạng thái. | | |
 
 ## A.3. Button chức năng thanh công cụ
 
@@ -93,8 +93,9 @@ Hiển thị khi Admin/Nhân viên bấm chọn thao tác *"Khóa tài khoản"*
 # C. Quy tắc nghiệp vụ (Business Rules)
 
 ## BR-01: Phân quyền truy cập dữ liệu khách hàng (Customer Data Access RBAC)
-1. **Chủ cửa hàng (Admin) & Quản lý bán hàng:** Có toàn quyền tra cứu, xem thông tin khách hàng, lịch sử mua sắm và thực hiện Khóa / Mở khóa tài khoản.
-2. **Nhân viên bán hàng (NVBH) & Shipper:** Được tra cứu thông tin liên hệ và địa chỉ để phục vụ chốt đơn và giao hàng; **không có quyền** thực hiện Khóa hoặc Mở khóa tài khoản khách hàng.
+1. **Chủ cửa hàng (Store Owner):** Có quyền tra cứu, xem thông tin khách hàng và thực hiện Khóa / Mở khóa tài khoản (UC-109, UC-158).
+2. **Sales Staff và Accountant:** Được tra cứu và xem hồ sơ khách hàng để xử lý bán hàng, thanh toán và công nợ (UC-109, UC-110); **không có quyền** Khóa / Mở khóa hoặc thay đổi trạng thái tài khoản.
+3. **Shipper:** Không truy cập màn Quản lý khách hàng. Thông tin liên hệ và địa chỉ cần để giao hàng được cung cấp trong đơn/đợt giao hàng được phân công, không qua màn này.
 
 ## BR-02: Cơ chế tìm kiếm & lọc đa điều kiện kết hợp (Search & Filter Logic)
 Tất cả các điều kiện lọc được kết hợp theo logic **AND**:
@@ -135,7 +136,7 @@ Tất cả các điều kiện lọc được kết hợp theo logic **AND**:
 3. Cột xuất: STT, Mã KH, Họ tên, SĐT, Email, Hạng thành viên, Số đơn hàng, Tổng chi tiêu (VNĐ), Ngày đăng ký, Trạng thái tài khoản. Bảo mật thông tin: Không xuất mật khẩu hay thông tin thẻ ngân hàng.
 
 ## BR-06: Quy tắc sinh Mã định danh khách hàng tự động (Auto-Generated Customer Code)
-1. Mã khách hàng (`CUSTOMER_CODE`) được hệ thống tự động sinh ra ngay khi khách hàng hoàn tất đăng ký tài khoản (tại [Register.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Common/Account/Register.md)).
+1. Mã khách hàng (`CUSTOMER_CODE`) được hệ thống tự động sinh ra ngay khi khách hàng hoàn tất đăng ký tài khoản (tại [Register.md](../../Common/Account/Register.md)).
 2. **Quy chuẩn định dạng:** Tiền tố `KH` kết hợp chuỗi 6 chữ số tăng dần tự động (Zero-padded), ví dụ: `KH000001`, `KH000002`, ..., `KH000152`.
 3. **Tính chất:** Duy nhất trên toàn hệ thống, ở trạng thái Chỉ đọc (Read-only), không cho phép chỉnh sửa hoặc tái sử dụng cho tài khoản khác.
 

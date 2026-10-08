@@ -3,7 +3,7 @@
 | Menu   | Header / Avatar Dropdown / Đăng xuất (Common / Logout) |
 | Mô tả  | Dùng để cho phép đối tượng **Người dùng đã đăng nhập (Customer / Staff / Admin)** thực hiện đăng xuất khỏi hệ thống một cách an toàn. Nút Đăng xuất nằm trong **Dropdown Menu Avatar** ở góc trên bên phải thanh Header. Khi bấm, hệ thống hiển thị Popup xác nhận, sau đó hủy Access Token & Refresh Token hiện tại, xóa HTTP-Only Secure Cookie phiên đăng nhập và điều hướng người dùng quay về **Màn hình Đăng nhập** tương ứng. Hệ thống cũng hỗ trợ tùy chọn **"Đăng xuất khỏi tất cả thiết bị"** giúp người dùng thu hồi toàn bộ phiên đang mở trên các trình duyệt/thiết bị khác để bảo vệ tài khoản khi nghi ngờ bị lộ thông tin. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan chức năng Đăng xuất (UC-01.07):**
+**Tổng quan chức năng Đăng xuất (UC-003):**
 - A. Vị trí nút Đăng xuất trên giao diện
   - A.1. Dropdown Menu Avatar trên Header
 - B. Popup Xác nhận Đăng xuất
@@ -29,7 +29,7 @@ Nút Đăng xuất nằm ở **mục cuối cùng** trong Dropdown Menu khi ngư
 
 | Tên Menu Item | Icon | Mô tả |
 | ------------- | ---- | ----- |
-| Hồ sơ của tôi | Icon User | Chuyển đến trang [Profile.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Common/Profile/Profile.md) (Chỉ hiển thị với Customer). |
+| Hồ sơ của tôi | Icon User | Chuyển đến trang [Profile.md](../Profile/Profile.md) (Chỉ hiển thị với Customer). |
 | Tài khoản của tôi | Icon Setting | Chuyển đến trang Quản lý tài khoản (Sidebar Hồ sơ / Địa chỉ / Đổi mật khẩu). |
 | Đường kẻ phân cách | Divider | Đường kẻ ngang mảnh phân tách giữa nhóm menu chức năng và nút Đăng xuất. |
 | **Đăng xuất** | Icon Logout (mũi tên ra cửa) | Nhấp vào sẽ mở **Popup xác nhận đăng xuất** (Mục B). Màu chữ: Đỏ nhẹ / Xám đậm để phân biệt với các mục menu khác. |
@@ -70,8 +70,8 @@ Khi người dùng tích checkbox **"Đăng xuất khỏi tất cả thiết b�
 
 ## BR-03: Điều hướng sau khi đăng xuất (Post-Logout Redirection)
 Sau khi hoàn tất hủy phiên:
-1. **Đối với Customer:** Điều hướng về màn hình [Đăng nhập Customer](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Common/Account/Login.md) (`/login`).
-2. **Đối với Staff / Admin:** Điều hướng về màn hình [Đăng nhập Staff](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Account/StaffLogin.md) (`/admin/login`).
+1. **Đối với Customer:** Điều hướng về màn hình [Đăng nhập Customer](Login.md) (`/login`).
+2. **Đối với Staff / Admin:** Điều hướng về màn hình [Đăng nhập Staff](../../Admin/Account/StaffLogin.md) (`/admin/login`).
 3. Hiển thị Toast thông báo trên màn hình Đăng nhập: *"Bạn đã đăng xuất thành công."*
 
 ## BR-04: Xử lý phiên hết hạn tự động (Auto Session Expiry)

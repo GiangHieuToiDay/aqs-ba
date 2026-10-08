@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Tài khoản của tôi / Địa chỉ (Common / Address Book) |
 | Mô tả  | Dùng để cho phép đối tượng **Khách hàng / Người dùng đã đăng nhập (Customer / User)** quản lý toàn bộ danh sách địa chỉ nhận hàng (Sổ địa chỉ cá nhân). Mỗi người dùng có thể lưu trữ nhiều địa chỉ khác nhau phục vụ quá trình đặt hàng và giao vận. Giao diện được thiết kế chuẩn xác theo mẫu thực tế: Danh sách địa chỉ hiển thị rõ ràng thông tin người nhận, số điện thoại, địa chỉ chi tiết, phân cấp hành chính, loại địa chỉ và huy hiệu **Mặc định**. Hệ thống hỗ trợ các thao tác nghiệp vụ hoàn chỉnh: Xem danh sách, Thêm mới địa chỉ (qua Modal popup có tích hợp chọn vị trí bản đồ và phân loại Nhà Riêng / Văn Phòng), Cập nhật thông tin địa chỉ, Xóa địa chỉ phụ và Thiết lập địa chỉ mặc định. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Quản lý Sổ địa chỉ (UC-01.05):**
+**Tổng quan màn Quản lý Sổ địa chỉ (UC-005):**
 - A. Màn hình Danh sách Địa chỉ (Main Address List Area)
   - A.1. Header danh sách địa chỉ
   - A.2. Bảng thông tin thẻ địa chỉ hiển thị (Address Card Items)
@@ -118,7 +118,7 @@ Khi người dùng nhấn chữ **"Xóa"** tại một thẻ địa chỉ phụ 
 2. Khi người dùng đã có đủ 10 địa chỉ: Nút **"+ Thêm địa chỉ mới"** trên Header sẽ bị vô hiệu hóa (disabled), hiển thị tooltip: *"Bạn đã đạt giới hạn tối đa 10 địa chỉ. Vui lòng xóa bớt địa chỉ cũ để thêm mới."*
 
 ## BR-02: Quy tắc quản lý Địa chỉ mặc định (Default Address Policy)
-1. **Tính duy nhất:** Trong danh sách địa chỉ của mỗi người dùng, **luôn luôn có duy nhất 1 địa chỉ được đánh dấu là Mặc định (`IS_DEFAULT = true`)**.
+1. **Tính duy nhất:** Khi tài khoản chưa lưu địa chỉ nào, không có địa chỉ mặc định. Khi danh sách có ít nhất một địa chỉ, **có đúng 1 địa chỉ được đánh dấu là Mặc định (`IS_DEFAULT = true`)**.
 2. **Khởi tạo địa chỉ đầu tiên:** Khi người dùng tạo địa chỉ nhận hàng đầu tiên cho tài khoản, hệ thống **tự động gán `IS_DEFAULT = true`** mà người dùng không thể bỏ chọn.
 3. **Chuyển giao quyền mặc định:** Khi người dùng tạo mới hoặc cập nhật một địa chỉ và tích chọn *"Đặt làm địa chỉ mặc định"*, hoặc nhấn nút *"Thiết lập mặc định"* trên thẻ:
    - Hệ thống tự động chuyển địa chỉ hiện tại thành: `IS_DEFAULT = true`.
