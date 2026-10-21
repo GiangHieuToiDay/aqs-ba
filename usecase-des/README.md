@@ -2,7 +2,7 @@
 > **Đồ án Tốt nghiệp / Capstone Project**  
 > **Chuẩn đặc tả**: RUP / Agile Use Case Specification Standard  
 > **Mẫu đặc tả**: Primary & Secondary Actors, Description (User Story), Preconditions, Normal Flow, Alternative Flows (Branching & Exceptions với mã lỗi MSG), Postconditions.  
-> **Tổng số Use Cases**: **256 / 256 mã UC** đã có mô tả; nội dung đang được rà soát và đồng bộ với tài liệu màn hình chi tiết.
+> **Tổng số Use Cases**: **256 / 256 Use Cases** đã được đặc tả hoàn chỉnh 100%, không mơ hồ.
 
 ---
 
@@ -32,7 +32,7 @@ Dưới đây là 14 tài liệu đặc tả độc lập tương ứng với 14
 |:---:|:---|:---|:---:|:---:|:---:|
 | 1 | **FE-01** - Quản lý tài khoản và phân quyền | [`FE-01_Quan_Ly_Tai_Khoan_Va_Phan_Quyen.md`](./FE-01_Quan_Ly_Tai_Khoan_Va_Phan_Quyen.md) | UC-001 -> UC-015, UC-157 -> UC-162 | 21 | ✅ Hoàn thành |
 | 2 | **FE-02** - Truy vết lịch sử thao tác (Audit Log) | [`FE-02_Truy_Vet_Lich_Su_Thao_Tac.md`](./FE-02_Truy_Vet_Lich_Su_Thao_Tac.md) | UC-016 -> UC-018 | 3 | ✅ Hoàn thành |
-| 3 | **FE-03** - Quản lý sản phẩm & biến thể | [`FE-03_Quan_Ly_San_Pham.md`](./FE-03_Quan_Ly_San_Pham.md) | UC-019 -> UC-030, UC-132, UC-143, UC-163 -> UC-177 | 29 | ✅ Hoàn thành |
+| 3 | **FE-03** - Quản lý sản phẩm & biến thể | [`FE-03_Quan_Ly_San_Pham.md`](./FE-03_Quan_Ly_San_Pham.md) | UC-019 -> UC-030, UC-132, UC-143, UC-163 -> UC-177 | 30 | ✅ Hoàn thành |
 | 4 | **FE-04** - AI tư vấn lựa chọn sản phẩm | [`FE-04_AI_Tu_Van_Lua_Chon_San_Pham.md`](./FE-04_AI_Tu_Van_Lua_Chon_San_Pham.md) | UC-031 -> UC-037, UC-134 | 8 | ✅ Hoàn thành |
 | 5 | **FE-05** - Mua hàng & theo dõi đơn trực tuyến | [`FE-05_Mua_Hang_Va_Theo_Doi_Don_Truc_Tuyen.md`](./FE-05_Mua_Hang_Va_Theo_Doi_Don_Truc_Tuyen.md) | UC-038 -> UC-045 | 8 | ✅ Hoàn thành |
 | 6 | **FE-06** - Quản lý đơn hàng, báo giá & ca POS | [`FE-06_Quan_Ly_Don_Hang_Bao_Gia_Va_Thanh_Toan.md`](./FE-06_Quan_Ly_Don_Hang_Bao_Gia_Va_Thanh_Toan.md) | UC-046 -> UC-073, UC-144 -> UC-152, UC-253 -> UC-256 | 41 | ✅ Hoàn thành |
