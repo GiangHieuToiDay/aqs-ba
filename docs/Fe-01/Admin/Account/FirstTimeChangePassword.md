@@ -3,7 +3,7 @@
 | Menu   | Cổng quản trị / Đổi mật khẩu lần đầu (Admin / First Time Change Password) |
 | Mô tả  | Dùng để **bắt buộc nhân viên mới** đặt lại mật khẩu cá nhân an toàn thay cho mật khẩu tạm thời được hệ thống sinh tự động khi tạo tài khoản. Màn hình này tự động xuất hiện ngay sau khi nhân viên hoàn tất xác thực 2FA OTP trong lần đăng nhập đầu tiên (cờ `IS_FIRST_LOGIN = true`). Nhân viên **không thể bỏ qua, không thể truy cập bất kỳ chức năng quản trị nào** cho đến khi hoàn thành thiết lập mật khẩu mới đạt chuẩn bảo mật. Sau khi đổi mật khẩu thành công, hệ thống cập nhật `IS_FIRST_LOGIN = false`, chuyển trạng thái tài khoản từ `Pending` sang `Active`, cấp lại JWT Token đầy đủ quyền RBAC và điều hướng nhân viên vào Admin Dashboard. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Đổi mật khẩu lần đầu (UC-01.18):**
+**Tổng quan màn Đổi mật khẩu lần đầu (luồng bổ trợ UC-002 / UC-008):**
 - A. Giao diện Màn hình Đổi mật khẩu lần đầu
   - A.1. Header & Thông báo bắt buộc
   - A.2. Thông tin các trường dữ liệu trên form
@@ -85,7 +85,7 @@ Sau khi mật khẩu mới hợp lệ và cập nhật thành công:
 
 ## C.1. Luồng đổi mật khẩu lần đầu thành công (Main Flow)
 
-- **Bước 1:** Nhân viên đăng nhập lần đầu qua [StaffLogin.md](file:///E:/FA26/Capstone/Aqs-ba/docs/Fe-01/Admin/Account/StaffLogin.md) → Xác thực 2FA thành công → Hệ thống phát hiện `IS_FIRST_LOGIN = true`.
+- **Bước 1:** Nhân viên đăng nhập lần đầu qua [StaffLogin.md](StaffLogin.md) → Xác thực 2FA thành công → Hệ thống phát hiện `IS_FIRST_LOGIN = true`.
 - **Bước 2:** Hệ thống tự động chuyển hướng sang màn hình **Thiết lập mật khẩu mới** (trang này), cấp JWT Token tạm.
 - **Bước 3:** Nhân viên nhập Mật khẩu mới (đạt chuẩn BR-02) và Xác nhận mật khẩu.
 - **Bước 4:** Nhân viên bấm nút **"Xác nhận & Bắt đầu làm việc"**.

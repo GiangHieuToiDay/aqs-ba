@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Đăng ký tài khoản (Guest / Customer Registration) |
 | Mô tả  | Dùng để cho phép đối tượng **Khách hàng chưa đăng nhập (Guest)** tự đăng ký tài khoản **Customer** mới trên hệ thống trên **một form duy nhất (Single-Form Registration)** theo thiết kế chuẩn. Form bao gồm: (1) Ô nhập Số điện thoại tích hợp nút **"Gửi Mã xác minh"** trực tiếp trên cùng hàng; (2) Ô nhập **Mã xác minh (OTP)** 6 chữ số; (3) Ô nhập **Họ và tên**; (4) Ô nhập **Mật khẩu** (chỉ nhập 1 lần kèm ẩn/hiện, Email được liên kết sau trong Profile). Hệ thống tích hợp cơ chế chống spam nghiêm ngặt (giới hạn gửi lại mã tối đa 3 lần/10 phút, khóa IP tạm thời khi vượt ngưỡng). Khi người dùng hoàn tất điền form và bấm **"Đăng ký"**, hệ thống kiểm tra toàn bộ thông tin, tạo ngay tài khoản ở trạng thái **Active** (không sinh tài khoản rác Pending) và tự động đăng nhập đưa người dùng vào hệ thống. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Đăng ký tài khoản Customer (UC-01.01):**
+**Tổng quan màn Đăng ký tài khoản Customer (UC-001):**
 - A. Giao diện Màn hình Đăng ký tài khoản (Form đăng ký chính)
   - A.1. Header form đăng ký
   - A.2. Thông tin các trường dữ liệu trên form
@@ -33,7 +33,7 @@ Form đăng ký được thiết kế dạng khối thẻ trung tâm (Card Layou
 | Tên | Loại dữ liệu | Bắt buộc | Mô tả |
 | --- | ------------ | -------- | ----- |
 | Tiêu đề Form | Title | | Nằm ở góc trên bên trái form. Text: **"Đăng ký"** (font size lớn, in đậm, màu chữ chính). |
-| Liên kết Đăng nhập | Hyperlink | | Nằm ở góc trên bên phải form, ngang hàng với tiêu đề. Text màu cam/đỏ thương hiệu: **"Đăng nhập"**.<br><br>Thao tác: Nhấp vào sẽ điều hướng sang màn hình Đăng nhập `docs/Fe-01/Common/Login.md` (kèm tham số redirect nếu có). |
+| Liên kết Đăng nhập | Hyperlink | | Nằm ở góc trên bên phải form, ngang hàng với tiêu đề. Text màu cam/đỏ thương hiệu: **"Đăng nhập"**.<br><br>Thao tác: Nhấp vào sẽ điều hướng sang màn hình Đăng nhập `docs/Fe-01/Common/Account/Login.md` (kèm tham số redirect nếu có). |
 
 ## A.2. Thông tin các trường dữ liệu trên form
 
@@ -41,7 +41,7 @@ Form đăng ký được thiết kế dạng khối thẻ trung tâm (Card Layou
 | --- | ------------ | -------- | ----- | -------------- | ------ |
 | Số điện thoại | TextInput | x | Ô nhập số điện thoại di động của khách hàng. Không sử dụng ô chọn mã quốc gia, mặc định áp dụng đầu số di động Việt Nam.<br><br>Placeholder: **"Nhập số điện thoại"**.<br><br>Quy tắc kiểm tra (Validate):<br>- Không được để trống.<br>- Chỉ chấp nhận ký tự số (`0-9`), tự động chặn nhập chữ và ký tự đặc biệt.<br>- Đúng định dạng 10 chữ số, bắt đầu bằng các đầu số nhà mạng di động hợp lệ tại Việt Nam: `03`, `05`, `07`, `08`, `09` (Regex: `^(03\|05\|07\|08\|09)[0-9]{8}$`).<br>- Tự động trim khoảng trắng.<br>- Kiểm tra trùng lặp CSDL theo quy tắc **BR-01** khi bấm nút "Gửi Mã xác minh" hoặc khi bấm nút "Đăng ký".<br><br>Cảnh báo lỗi inline dưới ô nhập:<br>- Để trống: *Vui lòng nhập số điện thoại.*<br>- Sai định dạng: *Số điện thoại không hợp lệ (gồm 10 chữ số, bắt đầu bằng 03, 05, 07, 08, 09).*<br>- Đã tồn tại: *Số điện thoại này đã được đăng ký tài khoản. Vui lòng đăng nhập hoặc dùng chức năng Quên mật khẩu.* | PHONE_NUMBER | 15 |
 | Nút Gửi Mã xác minh | Button (Inline) | x | Nút bấm được nhúng tích hợp nằm ở cạnh phải bên trong/cùng hàng với ô nhập **Số điện thoại**.<br><br>Label mặc định: **"Gửi Mã xác minh"**.<br><br>Trạng thái & Xử lý:<br>- Disabled nếu ô Số điện thoại chưa nhập đủ 10 số hợp lệ.<br>- Khi bấm: Validate SĐT $\rightarrow$ Kiểm tra trùng lặp CSDL $\rightarrow$ Kiểm tra rate limit IP/SĐT theo **BR-03**.<br>- Nếu thỏa mãn: Gửi mã OTP 6 số qua SMS Brandname. Nút chuyển sang trạng thái đếm ngược: **"Gửi lại sau (X)s"** (với X đếm ngược từ 60 về 0) và tạm thời bị vô hiệu hóa cho đến khi hết 60s cooldown. | Không lưu DB (Chỉ trigger API gửi SMS OTP) | |
-| Mã xác minh | NumberInput | x | Ô nhập mã OTP gồm 6 chữ số mà khách hàng nhận được từ tin nhắn SMS.<br><br>Placeholder: **"Mã xác minh"**.<br><br>Quy tắc kiểm tra (Validate):<br>- Không được để trống.<br>- Chỉ chấp nhận ký tự số (`0-9`), độ dài đúng 6 ký tự số.<br>- Hỗ trợ tự động dán (Auto-paste) 6 chữ số từ Clipboard.<br>- Kiểm tra mã khớp với mã OTP đã sinh và còn thời gian hiệu lực (3–5 phút) theo quy tắc **BR-02**.<br><br>Cảnh báo lỗi inline dưới ô nhập:<br>- Để trống: *Vui lòng nhập mã xác minh.*<br>- Chưa đủ 6 số: *Mã xác minh phải gồm 6 chữ số.*<br>- Mã không đúng: *Mã xác minh không chính xác. Bạn còn [X] lần thử.*<br>- Mã hết hạn: *Mã xác minh đã hết hiệu lực. Vui lòng bấm "Gửi Mã xác minh" để nhận mã mới.* | OTP_CODE (Lưu trữ tạm thời trong Redis/Cache kèm TTL) | 6 |
+| Mã xác minh | NumberInput | x | Ô nhập mã OTP gồm 6 chữ số mà khách hàng nhận được từ tin nhắn SMS.<br><br>Placeholder: **"Mã xác minh"**.<br><br>Quy tắc kiểm tra (Validate):<br>- Không được để trống.<br>- Chỉ chấp nhận ký tự số (`0-9`), độ dài đúng 6 ký tự số.<br>- Hỗ trợ tự động dán (Auto-paste) 6 chữ số từ Clipboard.<br>- Kiểm tra mã khớp với mã OTP đã sinh và còn thời gian hiệu lực (180 giây) theo quy tắc **BR-02**.<br><br>Cảnh báo lỗi inline dưới ô nhập:<br>- Để trống: *Vui lòng nhập mã xác minh.*<br>- Chưa đủ 6 số: *Mã xác minh phải gồm 6 chữ số.*<br>- Mã không đúng: *Mã xác minh không chính xác. Bạn còn [X] lần thử.*<br>- Mã hết hạn: *Mã xác minh đã hết hiệu lực. Vui lòng bấm "Gửi Mã xác minh" để nhận mã mới.* | OTP_CODE (Lưu trữ tạm thời trong Redis/Cache kèm TTL) | 6 |
 | Họ và tên | TextInput | x | Ô nhập họ và tên của khách hàng.<br><br>Placeholder: **"Nhập họ và tên"**.<br><br>Quy tắc kiểm tra (Validate):<br>- Không được để trống.<br>- Độ dài từ 2 đến 100 ký tự.<br>- Chỉ chấp nhận chữ cái tiếng Việt có dấu, không dấu và khoảng trắng; không chứa số hoặc ký tự đặc biệt (Regex: `^[\p{L}\s]{2,100}$`).<br>- Tự động trim khoảng trắng thừa.<br><br>Cảnh báo lỗi inline dưới ô nhập:<br>- Để trống: *Vui lòng nhập họ và tên.*<br>- Vi phạm định dạng/độ dài: *Họ và tên không hợp lệ (từ 2 đến 100 ký tự, không chứa số và ký tự đặc biệt).* | FULL_NAME | 100 |
 | Mật khẩu | PasswordInput | x | Ô thiết lập mật khẩu cho tài khoản. **Chỉ nhập 1 lần duy nhất** (không có ô xác nhận lại).<br><br>Placeholder: **"Nhập mật khẩu"**.<br><br>Mặc định ẩn dưới dạng ký tự chấm đen (`••••••••`). Có icon mắt ở góc phải để bật/tắt hiển thị mật khẩu rõ.<br><br>Quy tắc kiểm tra (Validate) theo **BR-04**:<br>- Không được để trống.<br>- Độ dài **tối thiểu 8 ký tự trở lên** (chuẩn hóa toàn hệ thống).<br>- Phải bao gồm đồng thời ít nhất: 1 chữ viết hoa (`A-Z`), 1 chữ viết thường (`a-z`), 1 chữ số (`0-9`) và 1 ký tự đặc biệt (`!@#$%^&*...`).<br>- Không chứa khoảng trắng.<br><br>Cảnh báo lỗi inline dưới ô nhập:<br>- Để trống: *Vui lòng nhập mật khẩu.*<br>- Không đủ chuẩn: *Mật khẩu phải dài từ 8 ký tự trở lên, bao gồm 1 chữ viết hoa, 1 chữ viết thường, số và ký tự đặc biệt.* | PASSWORD_HASH (Băm bằng thuật toán BCrypt hoặc Argon2id) | 255 |
 | Ghi chú Email | FormedText / Hint | | Text hướng dẫn nhỏ nằm dưới form: *"Email có thể liên kết bổ sung sau trong mục Thông tin tài khoản để nhận hóa đơn và thông báo."* | EMAIL (Khởi tạo giá trị NULL trong CSDL) | 255 |
@@ -71,23 +71,23 @@ Form đăng ký được thiết kế dạng khối thẻ trung tâm (Card Layou
    - Khi khách hàng nhập xong số điện thoại và bấm **"Gửi Mã xác minh"**:
      + Hệ thống sinh mã OTP ngẫu nhiên gồm đúng **6 chữ số** (`0-9`).
      + Gửi mã OTP qua dịch vụ SMS Brandname đến số điện thoại người dùng.
-     + Lưu mã OTP vào hệ thống bộ nhớ đệm (Redis/Cache) với thời hạn sống (TTL): **3 đến 5 phút** (mặc định 180 giây).
+     + Lưu mã OTP vào hệ thống bộ nhớ đệm (Redis/Cache) với thời hạn sống (TTL): **180 giây**.
    - Nút **"Gửi Mã xác minh"** lập tức chuyển sang trạng thái đếm ngược thời gian hồi (Cooldown) 60 giây: `Gửi lại sau (60s)`. Trong thời gian này, nút bị disable không cho bấm tiếp.
 2. **Quy trình xác thực mã OTP khi bấm "Đăng ký":**
    - Mã xác minh phải khớp 100% với mã OTP đang có hiệu lực trong cache gắn với Số điện thoại đó.
    - Cho phép nhập sai tối đa **5 lần**. Nếu nhập sai lần thứ 5, mã OTP hiện tại bị hủy ngay lập tức để chống dò mã (Brute-Force Attack), yêu cầu người dùng phải bấm "Gửi Mã xác minh" lại từ đầu.
-   - Khi mã đã hết hạn (> 3–5 phút): Báo lỗi mã hết hạn và yêu cầu gửi mã mới.
+   - Khi mã đã hết hạn (> 180 giây): Báo lỗi mã hết hạn và yêu cầu gửi mã mới.
    - Mỗi mã OTP chỉ có giá trị xác thực thành công duy nhất **1 lần (One-Time)**. Ngay sau khi bấm Đăng ký thành công, mã OTP trong cache bị xóa ngay lập tức.
 
 ## BR-03: Cơ chế chống Spam & Giới hạn tần suất (Anti-Spam & Rate Limiting)
 Nhằm ngăn chặn hành vi spam phá hoại và lãng phí chi phí SMS viễn thông:
 1. **Giới hạn gửi lại mã OTP (Resend Rate Limit):**
-   - Giới hạn tối đa **3 lần nhấn "Gửi Mã xác minh" trong vòng 10 phút** cho cùng một Số điện thoại.
+   - Giới hạn tối đa **3 lần gửi OTP trong 10 phút** cho cùng một Số điện thoại và mục đích đăng ký, **tính cả lần gửi đầu tiên**.
    - Thời gian chờ giữa 2 lần gửi liên tiếp (Cooldown) bắt buộc tối thiểu là **60 giây**.
    - Nếu vượt quá 3 lần/10 phút: Khóa chức năng gửi mã của SĐT đó trong vòng 10 phút tiếp theo, hiển thị cảnh báo: *"Bạn đã yêu cầu gửi mã quá 3 lần trong 10 phút. Vui lòng thử lại sau [Z] phút."*
 2. **Khóa tạm thời theo địa chỉ IP (IP Rate Limiting):**
    - Giám sát tần suất gửi yêu cầu từ mỗi địa chỉ IP của Client.
-   - Nếu 1 địa chỉ IP gửi vượt quá **10 yêu cầu gửi mã/đăng ký trong vòng 5 phút**: Hệ thống tự động chặn toàn bộ request từ IP đó trong thời gian **15–30 phút**.
+   - Nếu 1 địa chỉ IP gửi vượt quá **10 yêu cầu gửi mã/đăng ký trong vòng 5 phút**: Hệ thống tự động chặn toàn bộ request từ IP đó trong thời gian **15 phút**.
    - Trả về mã lỗi HTTP `429 Too Many Requests` và ghi nhận vào nhật ký bảo mật (`SECURITY_AUDIT_LOGS`).
 
 ## BR-04: Quy chuẩn Mật khẩu & Chính sách nhập 1 lần (Single Password Policy)
@@ -136,7 +136,7 @@ Ngay sau khi hệ thống lưu tài khoản thành công tại thao tác bấm n
             │                        Hệ thống kiểm tra SĐT & Rate limit
             │                                     │ (Hợp lệ)
             │                                     ▼
-            │                        Gửi mã OTP 6 số qua SMS (Hiệu lực 3-5p)
+            │                        Gửi mã OTP 6 số qua SMS (Hiệu lực 180 giây)
             │                        Nút bắt đầu đếm ngược Cooldown 60s
             │                                     │
             ├─► (2) Nhập [Mã xác minh] (6 số) ◄───┘
@@ -173,7 +173,7 @@ Ngay sau khi hệ thống lưu tài khoản thành công tại thao tác bấm n
 - **Bước 5:** Khách hàng nhập tiếp **"Họ và tên"** và thiết lập **"Mật khẩu"** (có thể bấm icon mắt để xem lại mật khẩu đã gõ).
 - **Bước 6:** Khách hàng tích chọn **"Tôi đồng ý với Điều khoản dịch vụ và Chính sách bảo mật"** và nhấn nút **"Đăng ký"**.
 - **Bước 7:** Hệ thống tiếp nhận request, tiến hành validate toàn bộ dữ liệu, đối chiếu mã OTP trong cache:
-  + Mã OTP chính xác và còn trong thời hạn 3–5 phút.
+  + Mã OTP chính xác và còn trong thời hạn 180 giây.
   + Mật khẩu đạt độ mạnh quy định.
 - **Bước 8:** Hệ thống lưu thông tin tài khoản vào bảng `USERS` với trạng thái `Active`, hủy mã OTP trong cache, tự động cấp JWT Token đăng nhập và điều hướng khách hàng thẳng vào Trang chủ kèm thông báo thành công.
 
@@ -193,7 +193,7 @@ Ngay sau khi hệ thống lưu tài khoản thành công tại thao tác bấm n
 
 ### A4. Chặn địa chỉ IP do phát hiện hành vi tấn công/Spam (BR-03)
 - **Điều kiện:** Một địa chỉ IP gửi vượt quá 10 requests gửi mã/đăng ký trong vòng 5 phút.
-- **Xử lý:** Hệ thống từ chối yêu cầu, trả về HTTP status `429 Too Many Requests`, hiển thị popup cảnh báo bảo mật và tạm thời khóa quyền gửi request của IP trong 15–30 phút.
+- **Xử lý:** Hệ thống từ chối yêu cầu, trả về HTTP status `429 Too Many Requests`, hiển thị popup cảnh báo bảo mật và tạm thời khóa quyền gửi request của IP trong 15 phút.
 
 ### A5. Bấm "Đăng ký" khi chưa nhập mã xác minh hoặc mã chưa đủ 6 số
 - **Điều kiện:** Ô Mã xác minh bị để trống hoặc chỉ mới gõ 1-5 số khi bấm nút Đăng ký.
@@ -203,12 +203,12 @@ Ngay sau khi hệ thống lưu tài khoản thành công tại thao tác bấm n
 - **Điều kiện:** Mã OTP người dùng nhập vào không khớp với mã hệ thống đã sinh và gửi qua SMS.
 - **Xử lý:** Hệ thống hiển thị lỗi chữ đỏ dưới ô nhập: *"Mã xác minh không chính xác. Bạn còn [5 - X] lần thử."*
 
-### A7. Nhập sai mã xác minh quá 5 lần (BR-02)
+### A7. Nhập sai mã xác minh 5 lần (BR-02)
 - **Điều kiện:** Khách hàng nhập sai mã OTP liên tiếp 5 lần khi submit.
-- **Xử lý:** Hệ thống lập tức hủy mã OTP hiện tại trong cache và hiển thị cảnh báo: *"Bạn đã nhập sai mã xác minh quá 5 lần. Mã đã bị hủy. Vui lòng bấm 'Gửi Mã xác minh' để nhận mã mới."*
+- **Xử lý:** Hệ thống lập tức hủy mã OTP hiện tại trong cache và hiển thị cảnh báo: *"Bạn đã nhập sai mã xác minh 5 lần. Mã đã bị hủy. Vui lòng bấm 'Gửi Mã xác minh' để nhận mã mới."*
 
-### A8. Mã xác minh OTP hết thời hạn hiệu lực (Sau 3–5 phút)
-- **Điều kiện:** Người dùng điền form và bấm Đăng ký sau khi mã OTP đã hết hạn (quá 3–5 phút).
+### A8. Mã xác minh OTP hết thời hạn hiệu lực (Sau 180 giây)
+- **Điều kiện:** Người dùng điền form và bấm Đăng ký sau khi mã OTP đã hết hạn (quá 180 giây).
 - **Xử lý:** Hệ thống báo lỗi chữ đỏ: *"Mã xác minh đã hết hiệu lực. Vui lòng bấm 'Gửi Mã xác minh' để nhận mã mới."*
 
 ### A9. Mật khẩu không đạt quy chuẩn an toàn (BR-04)
@@ -244,7 +244,7 @@ sequenceDiagram
             UI-->>Guest: Báo lỗi "Số điện thoại này đã được đăng ký"
         else SĐT hợp lệ
             API->>API: 5. Sinh mã OTP ngẫu nhiên 6 chữ số
-            API->>Cache: 6. Lưu OTP vào Redis (TTL 3-5 phút)
+            API->>Cache: 6. Lưu OTP vào Redis (TTL 180 giây)
             API->>SMS: 7. Gửi SMS Brandname chứa mã OTP tới SĐT
             SMS-->>Guest: Khách nhận SMS chứa mã xác minh 6 số
             API-->>UI: Phản hồi 200 OK (Gửi mã thành công)
@@ -292,8 +292,8 @@ sequenceDiagram
 | `MSG_REG_05` | Inline Error | *Vui lòng nhập mã xác minh.* | Để trống ô Mã xác minh khi bấm nút Đăng ký. |
 | `MSG_REG_06` | Inline Error | *Mã xác minh phải gồm 6 chữ số.* | Nhập thiếu ký tự số ở ô Mã xác minh (dưới 6 số). |
 | `MSG_REG_07` | Inline Error | *Mã xác minh không chính xác. Bạn còn [X] lần thử.* | Nhập sai mã OTP (số lần sai < 5). |
-| `MSG_REG_08` | Inline Error | *Mã xác minh đã hết hiệu lực. Vui lòng bấm "Gửi Mã xác minh" để nhận mã mới.* | Nhập OTP khi thời gian hiệu lực 3–5 phút đã kết thúc. |
-| `MSG_REG_09` | Modal Warning| *Bạn đã nhập sai mã xác minh quá 5 lần. Mã xác minh đã bị hủy. Vui lòng gửi lại mã mới.* | Nhập sai mã OTP liên tiếp 5 lần (BR-02). |
+| `MSG_REG_08` | Inline Error | *Mã xác minh đã hết hiệu lực. Vui lòng bấm "Gửi Mã xác minh" để nhận mã mới.* | Nhập OTP khi thời gian hiệu lực 180 giây đã kết thúc. |
+| `MSG_REG_09` | Modal Warning| *Bạn đã nhập sai mã xác minh 5 lần. Mã xác minh đã bị hủy. Vui lòng gửi lại mã mới.* | Nhập sai mã OTP liên tiếp 5 lần (BR-02). |
 | `MSG_REG_10` | Toast Warning| *Bạn đã yêu cầu gửi mã quá 3 lần trong 10 phút. Vui lòng thử lại sau [Z] phút.* | Nhấn gửi mã vượt quá định mức cho phép (BR-03). |
 | `MSG_REG_11` | Popup Alert | *Hệ thống phát hiện lượt truy cập bất thường từ thiết bị/IP của bạn. Quyền gửi yêu cầu tạm khóa trong 15 phút.* | Kích hoạt cơ chế chặn IP do nghi vấn spam/DDoS (BR-03). |
 | `MSG_REG_12` | Inline Error | *Vui lòng nhập họ và tên.* | Để trống trường Họ và tên khi bấm nút Đăng ký. |

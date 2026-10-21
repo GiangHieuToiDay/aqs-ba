@@ -3,7 +3,7 @@
 | Menu   | Trang chủ / Tài khoản của tôi / Đổi mật khẩu (Common / Change Password) |
 | Mô tả  | Dùng để cho phép đối tượng **Khách hàng / Người dùng đã đăng nhập (Customer / User)** chủ động thay đổi mật khẩu đăng nhập của tài khoản định kỳ hoặc khi nghi ngờ mật khẩu cũ bị lộ. Màn hình nằm trong cụm phân hệ **"Tài khoản của tôi"** với thanh điều hướng Sidebar bên trái (mục "Đổi mật khẩu" active). Người dùng thực hiện khai báo Mật khẩu hiện tại, thiết lập Mật khẩu mới đạt chuẩn bảo mật và nhập Xác nhận mật khẩu mới. Hệ thống kiểm tra đối soát mật khẩu cũ, ràng buộc không trùng mật khẩu cũ và băm mật khẩu mới an toàn vào CSDL `USERS`. Đồng thời, hệ thống tự động thu hồi (revoke) các phiên đăng nhập cũ trên các thiết bị khác để bảo đảm an toàn thông tin tối đa. Áp dụng style UI, layout, component theo **style chung của project**. |
 
-**Tổng quan màn Đổi mật khẩu (UC-01.06):**
+**Tổng quan màn Đổi mật khẩu (UC-006):**
 - A. Bố cục chung & Thanh điều hướng Sidebar
   - A.1. Sidebar điều hướng phân hệ Tài khoản
 - B. Màn hình Đổi mật khẩu (Main Change Password Content Area)
@@ -77,11 +77,11 @@ Khung nội dung bên phải hiển thị form đổi mật khẩu được thi�
 1. Hệ thống đối soát chuỗi người dùng nhập tại ô "Mật khẩu hiện tại" với chuỗi băm `PASSWORD_HASH` trong CSDL bằng thuật toán an toàn (BCrypt / Argon2id).
 2. **Kiểm soát brute-force:**
    - Hệ thống đếm số lần nhập sai mật khẩu hiện tại trong phiên làm việc.
-   - Nếu nhập sai liên tiếp **5 lần**: Hệ thống tạm thời khóa tính năng đổi mật khẩu của tài khoản trong **15–30 phút**, trả về lỗi: *"Bạn đã nhập sai mật khẩu hiện tại quá 5 lần. Tính năng đổi mật khẩu tạm khóa trong 15 phút để bảo vệ tài khoản."*
+   - Nếu nhập sai liên tiếp **5 lần**: Hệ thống tạm thời khóa tính năng đổi mật khẩu của tài khoản trong **15 phút**, trả về lỗi: *"Bạn đã nhập sai mật khẩu hiện tại 5 lần. Tính năng đổi mật khẩu tạm khóa trong 15 phút để bảo vệ tài khoản."*
 
 ## BR-02: Quy chuẩn Mật khẩu mới & Chống trùng mật khẩu cũ
 1. **Quy chuẩn độ mạnh (Chuẩn hóa toàn hệ thống):** Mật khẩu mới bắt buộc phải tuân thủ nghiêm ngặt chính sách bảo mật hệ thống: Độ dài **tối thiểu 8 ký tự trở lên** (không giới hạn tối đa cứng, khuyến nghị ≤ 128 ký tự), bao gồm đồng thời ít nhất: 1 chữ cái in hoa (`A-Z`), 1 chữ cái in thường (`a-z`), 1 chữ số (`0-9`) và 1 ký tự đặc biệt (`!@#$%^&*()_+-=[]{}|;:,.<>?/~`). Không chứa khoảng trắng. Regex kiểm tra: `^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&*!()_+\-=\[\]{}|;':",.<>?/~]).{8,}$`.
-2. **Chống trùng mật khẩu cũ:** Mật khẩu mới sau khi băm không được trùng khớp với `PASSWORD_HASH` hiện tại. Nếu trùng, hệ thống từ chối cập nhật và báo lỗi: *"Mật khẩu mới không được trùng với mật khẩu hiện tại của bạn."*
+2. **Chống trùng mật khẩu cũ:** Trước khi băm mật khẩu mới, Backend dùng hàm `verify`/`compare` để đối soát mật khẩu mới người dùng vừa nhập với `PASSWORD_HASH` hiện tại. Nếu khớp, từ chối cập nhật và báo lỗi: *"Mật khẩu mới không được trùng với mật khẩu hiện tại của bạn."*
 
 ## BR-03: Ràng buộc đối soát Xác nhận mật khẩu mới
 1. Chuỗi ký tự tại ô "Xác nhận mật khẩu mới" phải trùng khớp 100% (có phân biệt hoa/thường) với chuỗi ký tự tại ô "Mật khẩu mới".
@@ -143,9 +143,9 @@ Nhằm bảo vệ an toàn tối đa cho người dùng trong tình huống nghi
 - **Điều kiện:** Mật khẩu hiện tại người dùng nhập không khớp với CSDL.
 - **Xử lý:** Tăng biến đếm số lần sai. Báo lỗi chữ đỏ: *"Mật khẩu hiện tại không chính xác. Bạn còn [5 - X] lần thử."*
 
-### A3. Nhập sai mật khẩu hiện tại quá 5 lần (BR-01)
+### A3. Nhập sai mật khẩu hiện tại 5 lần (BR-01)
 - **Điều kiện:** Nhập sai mật khẩu hiện tại liên tiếp 5 lần.
-- **Xử lý:** Khóa nút Xác nhận và hiển thị cảnh báo: *"Bạn đã nhập sai quá 5 lần. Tính năng đổi mật khẩu tạm thời bị khóa trong 15 phút."*
+- **Xử lý:** Khóa nút Xác nhận và hiển thị cảnh báo: *"Bạn đã nhập sai 5 lần. Tính năng đổi mật khẩu tạm thời bị khóa trong 15 phút."*
 
 ### A4. Mật khẩu mới không đủ độ mạnh (BR-02)
 - **Điều kiện:** Mật khẩu mới chưa đủ 8 ký tự hoặc thiếu chữ hoa, chữ thường, số, ký tự đặc biệt.
@@ -211,7 +211,7 @@ sequenceDiagram
 | ------------ | ------------- | ------------------ | ------------------- |
 | `MSG_PWD_01` | Inline Error | *Vui lòng nhập mật khẩu hiện tại.* | Để trống trường Mật khẩu hiện tại khi bấm Xác nhận. |
 | `MSG_PWD_02` | Inline Error | *Mật khẩu hiện tại không chính xác. Bạn còn [5 - X] lần thử.* | Nhập sai mật khẩu hiện tại (số lần sai < 5). |
-| `MSG_PWD_03` | Popup Warning| *Bạn đã nhập sai mật khẩu quá 5 lần. Chức năng đổi mật khẩu tạm khóa trong 15 phút.* | Nhập sai mật khẩu hiện tại liên tiếp 5 lần (BR-01). |
+| `MSG_PWD_03` | Popup Warning| *Bạn đã nhập sai mật khẩu 5 lần. Chức năng đổi mật khẩu tạm khóa trong 15 phút.* | Nhập sai mật khẩu hiện tại liên tiếp 5 lần (BR-01). |
 | `MSG_PWD_04` | Inline Error | *Vui lòng nhập mật khẩu mới.* | Để trống trường Mật khẩu mới. |
 | `MSG_PWD_05` | Inline Error | *Mật khẩu phải dài từ 8 ký tự trở lên, bao gồm 1 chữ viết hoa, 1 chữ viết thường, số và ký tự đặc biệt.* | Mật khẩu mới không đạt chuẩn bảo mật (BR-02). |
 | `MSG_PWD_06` | Inline Error | *Mật khẩu mới không được trùng với mật khẩu hiện tại.* | Mật khẩu mới trùng với mật khẩu cũ (BR-02). |
